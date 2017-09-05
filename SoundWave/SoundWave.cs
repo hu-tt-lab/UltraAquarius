@@ -1,5 +1,6 @@
 ﻿using System;
 using TimeCourse;
+using System.Linq;
 
 namespace SoundWave
 {
@@ -13,6 +14,14 @@ namespace SoundWave
         }
         public SoundWave(Duration duration, double samplingRate) : this(new double[(duration * samplingRate).value.Ticks]) { }
 
+        public static SoundWave operator*(SoundWave wave, Double k)
+        {
+            return new SoundWave(wave.values.Select(x => x * k).ToArray());
+        }
+        public static SoundWave operator*(Double k, SoundWave wave)
+        {
+            return wave * k;
+        }
     }
 
     public class PureTone : SoundWave

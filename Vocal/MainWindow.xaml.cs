@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Data;
+using CsvHelper;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -18,6 +20,10 @@ namespace Vocal
 {
     public enum Decibel
     {
+        dB10,
+        dB20,
+        dB30,
+        dB40,
         dB50,
         dB60,
         dB70,
@@ -78,6 +84,11 @@ namespace Vocal
                 new Sound()
             };
             random = new Random();
+
+            var files = Directory.EnumerateFiles(Directory.GetCurrentDirectory());
+            calibration.ItemsSource = files.Where(x => x.Contains("calibration.csv"));
+            calibration.SelectedIndex = 0;
+
         }
 
         public void SetIdle()
@@ -118,6 +129,23 @@ namespace Vocal
             }
         }
 
+        public Dictionary<Double, List<Double>> calibrationTable
+        {
+            get
+            {
+                var stream = new CsvReader(new StreamReader(calibration.SelectedValue as string));
+                var table = new Dictionary<Double, List<Double>>();
+
+                while(stream.Read())
+                {
+                    var row = stream.CurrentRecord.Where(x => x !="").Select(x => Double.Parse(x)).ToList();
+                    table[row[0]] = row.Skip(1).ToList();
+                }
+
+                 return table;
+            }
+        }
+
         private async void OnStartClick(object sender, RoutedEventArgs e)
         {
             SetActive();
@@ -128,6 +156,7 @@ namespace Vocal
             progress.Minimum = 0;
 
             var soundList = randomCheck.IsChecked == true ? sounds.OrderBy(i => Guid.NewGuid()).ToList() : sounds.ToList();
+            var calibrationData = calibrationTable;
 
             try
             {
@@ -137,7 +166,7 @@ namespace Vocal
 
                 var stream = Open();
                 stream.WriteLine("start sound..." + stream.NewLine);
-                
+
                 for (var i = 0; i < trial; i++)
                 {
                     foreach (var itr in soundList)
@@ -153,7 +182,7 @@ namespace Vocal
                         Update(stream);
 
 #if !DEBUG
-                        var signal = new SoundWave.PureTone(0.3, itr.frequency, itr.duration, device.samplingRate);
+                        var signal = new SoundWave.PureTone(0.3, itr.frequency, itr.duration, device.samplingRate) * calibrationTable[itr.frequency][(int)itr.decibel];
                         device.Output(signal.values, 3.5);
 #endif
                         await Task.Delay(duration.value);

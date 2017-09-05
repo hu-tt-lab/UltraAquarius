@@ -48,7 +48,7 @@
             <TabItem Header="Device">
                 <Grid Background="#FFE5E5E5">
                     <Label Content="Calibration Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <ComboBox HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="337"/>
+                    <ComboBox x:Name="calibration" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="337"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Trigger">
