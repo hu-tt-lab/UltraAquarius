@@ -6,4 +6,4 @@
 
 ## 必須環境
 - NIDAQmxドライバー16.0以上
-- .NETFramework 4.5以上
+- .NET Framework 4.5以上
