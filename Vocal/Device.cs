@@ -23,7 +23,7 @@ namespace Vocal
             task_.Done += (sender, e) => task_.Stop();
 
         }
-        public Device(double samplingRate = 100000) : this(new string[2] { "Dev/ao0", "Dev/ao1" }, samplingRate) { }
+        public Device(double samplingRate = 100000) : this(new string[2] { "Dev1/ao0", "Dev1/ao1" }, samplingRate) { }
         public void Output(double[] wave, double[] trigger)
         {
             var data = new double[wave.Length, 2];
