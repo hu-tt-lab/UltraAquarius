@@ -12,7 +12,7 @@ namespace SoundWave
         {
             this.values = values;
         }
-        public SoundWave(Duration duration, double samplingRate) : this(new double[(duration * samplingRate).value.Ticks]) { }
+        public SoundWave(Duration duration, double samplingRate) : this(new double[(int)(duration.seconds * samplingRate)]) { }
 
         public static SoundWave operator*(SoundWave wave, Double k)
         {

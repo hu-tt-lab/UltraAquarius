@@ -136,13 +136,13 @@ namespace Vocal
                 var stream = new CsvReader(new StreamReader(calibration.SelectedValue as string));
                 var table = new Dictionary<Double, List<Double>>();
 
-                while(stream.Read())
+                while (stream.Read())
                 {
-                    var row = stream.CurrentRecord.Where(x => x !="").Select(x => Double.Parse(x)).ToList();
+                    var row = stream.CurrentRecord.Where(x => x != "").Select(x => Double.Parse(x)).ToList();
                     table[row[0]] = row.Skip(1).ToList();
                 }
 
-                 return table;
+                return table;
             }
         }
 
@@ -184,6 +184,10 @@ namespace Vocal
 #if !DEBUG
                         var signal = new SoundWave.PureTone(0.3, itr.frequency, itr.duration, device.samplingRate) * calibrationTable[itr.frequency][(int)itr.decibel];
                         device.Output(signal.values, 3.5);
+#else
+                        var k = calibrationTable[itr.frequency][(int)itr.decibel];
+                        var signal = (new SoundWave.PureTone(0.3, itr.frequency, itr.duration, 10000)) * k;
+
 #endif
                         await Task.Delay(duration.value);
 
@@ -198,7 +202,7 @@ namespace Vocal
                 }
 
             }
-            catch (NationalInstruments.DAQmx.DaqException error)
+            catch (Exception error)
             {
                 MessageBox.Show(error.Message);
             }
