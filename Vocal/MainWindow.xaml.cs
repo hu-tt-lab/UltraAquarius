@@ -133,16 +133,18 @@ namespace Vocal
         {
             get
             {
-                var stream = new CsvReader(new StreamReader(calibration.SelectedValue as string));
-                var table = new Dictionary<Double, List<Double>>();
-
-                while (stream.Read())
+                using (var stream = new CsvReader(new StreamReader(calibration.SelectedValue as string)))
                 {
-                    var row = stream.CurrentRecord.Where(x => x != "").Select(x => Double.Parse(x)).ToList();
-                    table[row[0]] = row.Skip(1).ToList();
-                }
+                    var table = new Dictionary<Double, List<Double>>();
 
-                return table;
+                    while (stream.Read())
+                    {
+                        var row = stream.CurrentRecord.Where(x => x != "").Select(x => Double.Parse(x)).ToList();
+                        table[row[0]] = row.Skip(1).ToList();
+                    }
+
+                    return table;
+                }
             }
         }
 
@@ -160,47 +162,42 @@ namespace Vocal
 
             try
             {
-#if !DEBUG
-                var device = new Device();
-#endif
-
-                var stream = Open();
-                stream.WriteLine("start sound..." + stream.NewLine);
-
-                for (var i = 0; i < trial; i++)
+                using (var device = new Device(TimeSpan.FromSeconds(1)))
                 {
-                    foreach (var itr in soundList)
+
+                    var stream = Open();
+                    stream.WriteLine("start sound...");
+                    stream.WriteLine("Device Sampling Rate : {0:f3}[Hz]" + stream.NewLine, device.samplingRate);
+
+                    for (var i = 1; i <= trial; ++i)
                     {
-                        var duration = interval.duration + random.NextDouble() * interval.waggle;
-                        stream.WriteLine("Trial Count : {0:d}", i);
-                        stream.WriteLine("Tone : {0:g}", itr.tone);
-                        stream.WriteLine("Frequency : {0:f3} [hz]", itr.frequency);
-                        stream.WriteLine("Decibel : {0:g} [dB]", itr.decibel.ToString());
-                        stream.WriteLine("Duration : {0:f3} [ms]", itr.duration.milliseconds);
-                        stream.WriteLine("Interval : {0:f3} [ms]", duration.milliseconds);
-                        stream.WriteLine();
-                        Update(stream);
-
-#if !DEBUG
-                        var signal = new SoundWave.PureTone(0.3, itr.frequency, itr.duration, device.samplingRate) * calibrationTable[itr.frequency][(int)itr.decibel];
-                        device.Output(signal.values, 3.5);
-#else
-                        var k = calibrationTable[itr.frequency][(int)itr.decibel];
-                        var signal = (new SoundWave.PureTone(0.3, itr.frequency, itr.duration, 10000)) * k;
-
-#endif
-                        await Task.Delay(duration.value);
-
-                        if (Mode.Active != mode)
+                        foreach (var itr in soundList)
                         {
-                            stream.WriteLine("stop sound..." + stream.NewLine);
+                            var duration = interval.duration + random.NextDouble() * interval.waggle;
+                            stream.WriteLine("Trial Count : {0:d}", i);
+                            stream.WriteLine("Tone : {0:g}", itr.tone);
+                            stream.WriteLine("Frequency : {0:f3} [hz]", itr.frequency);
+                            stream.WriteLine("Decibel : {0:g} [dB]", itr.decibel.ToString());
+                            stream.WriteLine("Duration : {0:f3} [ms]", itr.duration.milliseconds);
+                            stream.WriteLine("Interval : {0:f3} [ms]", duration.milliseconds);
+                            stream.WriteLine();
                             Update(stream);
-                            return;
-                        }
-                    }
-                    progress.Value = i;
-                }
 
+                            var signal = new SoundWave.PureTone(calibrationTable[itr.frequency][(int)itr.decibel], itr.frequency, itr.duration, device.samplingRate);
+                            device.Output(signal.values, Double.Parse(triggerVoltage.Text));
+
+                            await Task.Delay(duration.value);
+
+                            if (Mode.Active != mode)
+                            {
+                                stream.WriteLine("stop sound..." + stream.NewLine);
+                                Update(stream);
+                                return;
+                            }
+                        }
+                        progress.Value = i;
+                    }
+                }
             }
             catch (Exception error)
             {
