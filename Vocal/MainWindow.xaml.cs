@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Data;
 using CsvHelper;
@@ -14,7 +15,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+
 
 namespace Vocal
 {
@@ -66,15 +68,14 @@ namespace Vocal
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum Mode
+        public enum Mode
         {
             Active,
             Idle,
             Buzy,
         }
 
-        private Random random;
-        private Mode mode;
+        private CancellationTokenSource cancellation;
 
         public MainWindow()
         {
@@ -83,7 +84,6 @@ namespace Vocal
             {
                 new Sound()
             };
-            random = new Random();
 
             var files = Directory.EnumerateFiles(Directory.GetCurrentDirectory());
             calibration.ItemsSource = files.Where(x => x.Contains("calibration.csv"));
@@ -91,6 +91,29 @@ namespace Vocal
 
         }
 
+        private Mode mode;
+        public Mode State
+        {
+            get
+            {
+                return mode;
+            }
+            set
+            {
+                switch (mode)
+                {
+                    case Mode.Active:
+                        SetActive();
+                        break;
+                    case Mode.Buzy:
+                        SetBuzy();
+                        break;
+                    case Mode.Idle:
+                        SetIdle();
+                        break;
+                }
+            }
+        }
         public void SetIdle()
         {
             mode = Mode.Idle;
@@ -116,7 +139,7 @@ namespace Vocal
             stop.IsEnabled = false;
         }
 
-        public List<Sound> sounds
+        public List<Sound> Sounds
         {
             get
             {
@@ -129,7 +152,7 @@ namespace Vocal
             }
         }
 
-        public Dictionary<Double, List<Double>> calibrationTable
+        public Dictionary<Double, List<Double>> CalibrationTable
         {
             get
             {
@@ -156,48 +179,85 @@ namespace Vocal
             progress.Value = 0;
             progress.Maximum = trial;
             progress.Minimum = 0;
-
-            var soundList = randomCheck.IsChecked == true ? sounds.OrderBy(i => Guid.NewGuid()).ToList() : sounds.ToList();
-            var calibrationData = calibrationTable;
+            cancellation = new CancellationTokenSource();
+            var stream = Open();
+            var random = new Random();
+            Func<Tone, double, double, TimeCourse.Duration, double, SoundWave.SoundWave> mixer = (tone, ampliude, frequency, duration, samplingRate) =>
+           {
+               switch (tone)
+               {
+                   case Tone.PureTone:
+                       return new SoundWave.PureTone(ampliude, frequency, duration, samplingRate);
+                   case Tone.ToneBurst:
+                       return new SoundWave.TonePip(ampliude, frequency, duration, samplingRate);
+                   case Tone.TonePip:
+                       return new SoundWave.TonePip(ampliude, frequency, duration, samplingRate);
+               }
+               throw new Exception("このパターンの波形はありません");
+           };
 
             try
             {
                 using (var device = new Device(TimeSpan.FromSeconds(1)))
                 {
 
-                    var stream = Open();
+                    var sounds = Sounds;
+                    var calibration = CalibrationTable;
+                    var waves = sounds.Select(x => mixer(x.tone, calibration[x.frequency][(int)x.decibel], x.frequency, x.duration, device.SamplingRate)).ToList();
+                    var trigger = Double.Parse(triggerVoltage.Text);
                     stream.WriteLine("start sound...");
-                    stream.WriteLine("Device Sampling Rate : {0:f3}[Hz]" + stream.NewLine, device.samplingRate);
+                    stream.WriteLine("Device Sampling Rate : {0:f3}[Hz]" + stream.NewLine, device.SamplingRate);
+
+                    var indecies = new List<List<int>>(trial);
+                    if (Random.SelectedIndex == 1)
+                    {
+                        var seq = Enumerable.Range(0, indecies.Count).OrderBy(x => Guid.NewGuid()).ToList();
+                        for (var i = 0; i < indecies.Count; ++i)
+                        {
+                            indecies[i] = seq;
+                        }
+                    }
+                    else if (Random.SelectedIndex == 2)
+                    {
+                        var seq = Enumerable.Range(0, indecies.Count);
+                        for (var i = 0; i < indecies.Count; ++i)
+                        {
+                            indecies[i] = seq.OrderBy(x => Guid.NewGuid()).ToList();
+                        }
+                    }
+                    else
+                    {
+                        var seq = Enumerable.Range(0, indecies.Count).ToList();
+                        for (var i = 0; i < indecies.Count; ++i)
+                        {
+                            indecies[i] = seq;
+                        }
+                    }
 
                     for (var i = 1; i <= trial; ++i)
                     {
-                        foreach (var itr in soundList)
+                        foreach (var itr in indecies[i])
                         {
                             var duration = interval.duration + random.NextDouble() * interval.waggle;
                             stream.WriteLine("Trial Count : {0:d}", i);
-                            stream.WriteLine("Tone : {0:g}", itr.tone);
-                            stream.WriteLine("Frequency : {0:f3} [hz]", itr.frequency);
-                            stream.WriteLine("Decibel : {0:g} [dB]", itr.decibel.ToString());
-                            stream.WriteLine("Duration : {0:f3} [ms]", itr.duration.milliseconds);
-                            stream.WriteLine("Interval : {0:f3} [ms]", duration.milliseconds);
+                            stream.WriteLine("Tone : {0:g}", sounds[itr].tone);
+                            stream.WriteLine("Frequency : {0:f3} [hz]", sounds[itr].frequency);
+                            stream.WriteLine("Decibel : {0:g} [dB]", sounds[itr].decibel.ToString());
+                            stream.WriteLine("Duration : {0:f3} [ms]", sounds[itr].duration.milliseconds);
+                            stream.WriteLine("Interval : {0:f3} [ms]", sounds[itr].duration.milliseconds);
                             stream.WriteLine();
                             Update(stream);
 
-                            var signal = new SoundWave.PureTone(calibrationTable[itr.frequency][(int)itr.decibel], itr.frequency, itr.duration, device.samplingRate);
-                            device.Output(signal.values, Double.Parse(triggerVoltage.Text));
-
-                            await Task.Delay(duration.value);
-
-                            if (Mode.Active != mode)
-                            {
-                                stream.WriteLine("stop sound..." + stream.NewLine);
-                                Update(stream);
-                                return;
-                            }
+                            device.Output(waves[itr].values, trigger);
+                            await Task.Delay(duration.value, cancellation.Token);
                         }
                         progress.Value = i;
                     }
                 }
+            }
+            catch (TaskCanceledException)
+            {
+                stream.WriteLine("stop sound...");
             }
             catch (Exception error)
             {
@@ -211,12 +271,13 @@ namespace Vocal
 
         private void OnStop(object sender, RoutedEventArgs e)
         {
+            cancellation.Cancel();
             SetBuzy();
         }
 
         private void OnAddClick(object sender, RoutedEventArgs e)
         {
-            var value = sounds;
+            var value = Sounds;
             if (value.Count == 0)
             {
                 value.Add(new Sound());
@@ -229,7 +290,7 @@ namespace Vocal
         }
         private void OnDeleteClick(object sender, RoutedEventArgs e)
         {
-            var value = sounds;
+            var value = Sounds;
             var selected = soundTable.SelectedIndex;
             if (selected >= 0)
             {

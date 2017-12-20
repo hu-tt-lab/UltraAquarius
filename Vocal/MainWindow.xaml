@@ -7,7 +7,7 @@
         xmlns:core="clr-namespace:System;assembly=mscorlib" 
         mc:Ignorable="d"
         Title="Vocal Control" Height="600" Width="800">
-    
+
     <Window.Resources>
         <ObjectDataProvider x:Key="DecibelEnum" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -70,7 +70,11 @@
                 </DataGrid>
                 <Button Content="Add" HorizontalAlignment="Left" Margin="0,480,0,0" VerticalAlignment="Top" Width="75" Click="OnAddClick"/>
                 <Button Content="Delete" HorizontalAlignment="Left" Margin="80,480,0,0" VerticalAlignment="Top" Width="75" Click="OnDeleteClick"/>
-                <CheckBox x:Name="randomCheck" Content="Random" HorizontalAlignment="Left" Margin="332,480,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="Random" HorizontalAlignment="Left" Margin="258,480,0,0" VerticalAlignment="Top" Width="139" SelectedIndex="0">
+                    <ComboBoxItem>Not</ComboBoxItem>
+                    <ComboBoxItem>Partial Random</ComboBoxItem>
+                    <ComboBoxItem>Full Random</ComboBoxItem>
+                </ComboBox>
             </Grid>
         </GroupBox>
     </Grid>
