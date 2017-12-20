@@ -208,10 +208,10 @@ namespace Vocal
                     stream.WriteLine("start sound...");
                     stream.WriteLine("Device Sampling Rate : {0:f3}[Hz]" + stream.NewLine, device.SamplingRate);
 
-                    var indecies = new List<List<int>>(trial);
+                    var indecies = Enumerable.Range(0, trial).Select(x => new List<int>()).ToList();
                     if (Random.SelectedIndex == 1)
                     {
-                        var seq = Enumerable.Range(0, indecies.Count).OrderBy(x => Guid.NewGuid()).ToList();
+                        var seq = Enumerable.Range(0, waves.Count).OrderBy(x => Guid.NewGuid()).ToList();
                         for (var i = 0; i < indecies.Count; ++i)
                         {
                             indecies[i] = seq;
@@ -219,7 +219,7 @@ namespace Vocal
                     }
                     else if (Random.SelectedIndex == 2)
                     {
-                        var seq = Enumerable.Range(0, indecies.Count);
+                        var seq = Enumerable.Range(0, waves.Count);
                         for (var i = 0; i < indecies.Count; ++i)
                         {
                             indecies[i] = seq.OrderBy(x => Guid.NewGuid()).ToList();
@@ -227,14 +227,14 @@ namespace Vocal
                     }
                     else
                     {
-                        var seq = Enumerable.Range(0, indecies.Count).ToList();
+                        var seq = Enumerable.Range(0, waves.Count).ToList();
                         for (var i = 0; i < indecies.Count; ++i)
                         {
                             indecies[i] = seq;
                         }
                     }
 
-                    for (var i = 1; i <= trial; ++i)
+                    for (var i = 0; i < trial; ++i)
                     {
                         foreach (var itr in indecies[i])
                         {
@@ -251,13 +251,14 @@ namespace Vocal
                             device.Output(waves[itr].values, trigger);
                             await Task.Delay(duration.value, cancellation.Token);
                         }
-                        progress.Value = i;
-                    }
+                        progress.Value = i + 1;
+                     }
                 }
             }
             catch (TaskCanceledException)
             {
                 stream.WriteLine("stop sound...");
+                Update(stream);
             }
             catch (Exception error)
             {
