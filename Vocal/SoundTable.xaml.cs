@@ -28,7 +28,7 @@ namespace Vocal
         PureTone,
         TonePip,
         ToneBurst,
-        Click
+        Click,
     }
 
     /// <summary>
@@ -37,9 +37,9 @@ namespace Vocal
     public class Sonant
     {
         public ToneType Tone { get; set; } = ToneType.PureTone;
-        public Double Decibel { get; set; } = 60;
-        public Double Frequency { get; set; } = 100;
-        public Double Duration { get; set; } = 100;
+        public double Decibel { get; set; } = 60;
+        public double Frequency { get; set; } = 100;
+        public double Duration { get; set; } = 100;
     }
 
     /// <summary>
@@ -137,11 +137,11 @@ namespace Vocal
         /// <summary>
         /// Decibel Label
         /// </summary>
-        public ObservableCollection<Double> Decibel { get; set; } = new ObservableCollection<double> { 50, 60, 70, 80 };
+        public ObservableCollection<double> Decibel { get; set; } = new ObservableCollection<double> { 50, 60, 70, 80 };
         /// <summary>
         /// Frequency Label
         /// </summary>
-        public ObservableCollection<Double> Frequency { get; set; } = new ObservableCollection<double> { 100, 200, 400, 800 };
+        public ObservableCollection<double> Frequency { get; set; } = new ObservableCollection<double> { 100, 200, 400, 800 };
 
         /// <summary>
         /// Raw Data
@@ -150,13 +150,14 @@ namespace Vocal
 
     }
 
-    class SonantWriter: IDisposable
+    public class SonantWriter: IDisposable
     {
-        class Mapper : CsvClassMap<Sonant>
+
+        class Mapper : ClassMap<Sonant>
         {
-            Mapper()
+            public Mapper()
             {
-                Map(x => x.Tone.ToString()).Index(0);
+                Map(x => String.Format("{0:g}", x.Tone)).Index(0);
                 Map(x => x.Decibel).Index(1);
                 Map(x => x.Frequency).Index(2);
                 Map(x => x.Duration).Index(3);
@@ -165,10 +166,10 @@ namespace Vocal
 
         public SonantWriter(string name)
         {
-            stream_ = new StreamWriter(name);
+            stream_ = File.CreateText(name);
             writer_ = new CsvWriter(stream_);
             writer_.Configuration.HasHeaderRecord = true;
-            writer_.Configuration.RegisterClassMap(typeof(Mapper));
+            writer_.Configuration.RegisterClassMap<Mapper>();
         }
 
         public void Write(IEnumerable<Sonant> rhs)
@@ -187,7 +188,7 @@ namespace Vocal
             stream_.Dispose();
         }
 
-        StreamWriter stream_;
+        TextWriter stream_;
         CsvWriter writer_;
     }
 }
