@@ -29,6 +29,7 @@ namespace Vocal
         TonePip,
         ToneBurst,
         Click,
+        Free
     }
 
     /// <summary>
@@ -71,7 +72,7 @@ namespace Vocal
         {
             get
             {
-                foreach(var e in Rows)
+                foreach (var e in Rows)
                 {
                     if (e.Valid)
                     {
@@ -99,7 +100,7 @@ namespace Vocal
         /// <param name="rhs">sound parameter</param>
         public void Add(Sonant rhs)
         {
-            Rows.Add(new Variable { Sound=rhs });
+            Rows.Add(new Variable { Sound = rhs });
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace Vocal
         {
             Insert(Rows.Count - 1);
         }
-        
+
         /// <summary>
         /// Push row
         /// </summary>
@@ -150,7 +151,7 @@ namespace Vocal
 
     }
 
-    public class SonantWriter: IDisposable
+    public class SonantWriter : IDisposable
     {
 
         class Mapper : ClassMap<Sonant>
@@ -190,5 +191,150 @@ namespace Vocal
 
         TextWriter stream_;
         CsvWriter writer_;
+
     }
+
+    /// <summary>
+    /// sound wave data
+    /// </summary>
+    public abstract class SoundWave
+    {
+        public SoundWave(double sampling, double duration, ToneType type)
+        {
+            SamplingRate = sampling;
+            Duration = duration;
+            Type = type;
+        }
+        public abstract IEnumerable<double> Wave { get; }
+
+        public double SamplingRate { get; }
+        public double Duration { get; }
+        public double Size { get { return (int)(SamplingRate * Duration); } }
+        public ToneType Type { get; }
+    }
+
+    /// <summary>
+    /// pure tone wave data
+    /// </summary>
+    public class PureWave : SoundWave
+    {
+        public PureWave(double frequency, double amplitude,
+            double sampling, double duration) : base(sampling, duration, ToneType.PureTone)
+        {
+            Gain = amplitude;
+            Frequency = frequency;
+        }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    yield return Gain * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate);
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Gain { get; }
+
+    }
+
+    /// <summary>
+    /// tone pip wave data
+    /// </summary>
+    public class PipWave : SoundWave
+    {
+        public PipWave(double frequency, double amplitude,
+            double sampling, double duration) : base(sampling, duration, ToneType.TonePip)
+        {
+            Gain = amplitude;
+            Frequency = frequency;
+        }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var size = Size / 2;
+                for (var i = 0; i < size; ++i)
+                {
+                    yield return Gain * (i * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate)) / size;
+                }
+                for (var i = size; i < Size; ++i)
+                {
+                    yield return Gain * ((Size - i) * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate)) / size;
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Gain { get; }
+
+    }
+
+    /// <summary>
+    /// tone pip wave data
+    /// </summary>
+    public class BurstWave : SoundWave
+    {
+        public BurstWave(double frequency, double amplitude,
+            double sampling, double duration) : base(sampling, duration, ToneType.ToneBurst)
+        {
+            Gain = amplitude;
+            Frequency = frequency;
+        }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var fade = Size / 10;
+                for (var i = 0; i < fade; ++i)
+                {
+                    yield return Gain * (i * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate)) / fade;
+                }
+                for (var i = fade; i < Size - fade; ++i)
+                {
+                    yield return Gain * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate);
+                }
+                for (var i = Size - fade; i < Size; ++i)
+                {
+                    yield return Gain * ((Size - i) * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate)) / fade;
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Gain { get; }
+
+    }
+
+    public class Trigger : SoundWave
+    {
+        public Trigger(double level, double sampling, double duration) : base(sampling, duration, ToneType.Free)
+        {
+            Level = level;
+        }
+
+        public double Level { get; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var onset = Size / 10;
+                for (var i = 0; i < onset; ++i)
+                {
+                    yield return Level;
+                }
+                for (var i = onset; i < Size; ++i)
+                {
+                    yield return 0;
+                }
+            }
+        }
+    }
+
 }
