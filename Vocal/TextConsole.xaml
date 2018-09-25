@@ -7,6 +7,8 @@
              mc:Ignorable="d"
              d:DesignHeight="245" d:DesignWidth="320">
     <Grid>
-        <TextBox x:Name="Console" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Hello!" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="245" Width="320"/>
+        <TextBox x:Name="Console" HorizontalAlignment="Left" TextWrapping="Wrap"
+                 VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" 
+                 IsReadOnly="True" Height="245" Width="320" />
     </Grid>
 </UserControl>

@@ -27,6 +27,12 @@ namespace Vocal
             writer = new StringWriter(new StringBuilder(Console.Text));
         }
 
+        public TextConsole Return()
+        {
+            writer.WriteLine();
+            return this;
+        }
+
         public TextConsole WriteLine(string text)
         {
             writer.WriteLine(text);
@@ -45,6 +51,11 @@ namespace Vocal
         public TextConsole WriteLine(string text, object x, object y, object z)
         {
             writer.WriteLine(text, x, y, z);
+            return this;
+        }
+        public TextConsole WriteLine(string text, object x, object y, object z, object w)
+        {
+            writer.WriteLine(text, x, y, z, w);
             return this;
         }
 
