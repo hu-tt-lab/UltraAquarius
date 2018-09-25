@@ -151,6 +151,9 @@ namespace Vocal
 
     }
 
+    /// <summary>
+    /// write csv file
+    /// </summary>
     public class SonantWriter : IDisposable
     {
 
@@ -158,16 +161,15 @@ namespace Vocal
         {
             public Mapper()
             {
-                Map(x => String.Format("{0:g}", x.Tone)).Index(0);
-                Map(x => x.Decibel).Index(1);
-                Map(x => x.Frequency).Index(2);
-                Map(x => x.Duration).Index(3);
+                Map(x => x.Decibel).Index(0);
+                Map(x => x.Frequency).Index(1);
+                Map(x => x.Duration).Index(2);
             }
         }
 
         public SonantWriter(string name)
         {
-            stream_ = File.CreateText(name);
+            stream_ = new StreamWriter(name, false, Encoding.UTF8);
             writer_ = new CsvWriter(stream_);
             writer_.Configuration.HasHeaderRecord = true;
             writer_.Configuration.RegisterClassMap<Mapper>();
