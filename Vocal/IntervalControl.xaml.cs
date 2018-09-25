@@ -68,11 +68,11 @@ namespace Vocal
         /// <summary>
         /// Interval
         /// </summary>
-        public double Interval
+        public TimeSpan Interval
         {
             get
             {
-                return Duration + Random.NextDouble() * Waggle;
+                return TimeSpan.FromMilliseconds(Duration + Random.NextDouble() * Waggle);
             }
         }
 
