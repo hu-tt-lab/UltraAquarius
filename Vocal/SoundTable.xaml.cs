@@ -138,11 +138,11 @@ namespace Vocal
         /// <summary>
         /// Decibel Label
         /// </summary>
-        public ObservableCollection<double> Decibel { get; set; } = new ObservableCollection<double> { 50, 60, 70, 80 };
+        public ObservableCollection<double> Decibel { get; set; } = new ObservableCollection<double> { 0 };
         /// <summary>
         /// Frequency Label
         /// </summary>
-        public ObservableCollection<double> Frequency { get; set; } = new ObservableCollection<double> { 100, 200, 400, 800 };
+        public ObservableCollection<double> Frequency { get; set; } = new ObservableCollection<double> { 0 };
 
         /// <summary>
         /// Raw Data
