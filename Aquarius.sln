@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocal", "Vocal\Vocal.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeCourse", "TimeCourse\TimeCourse.csproj", "{43FA2AA6-1FDF-4555-B098-7DB68354561C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundWave", "SoundWave\SoundWave.csproj", "{6C490135-5041-492F-B0F8-BC6E130C0832}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +21,11 @@ Global
 		{43FA2AA6-1FDF-4555-B098-7DB68354561C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43FA2AA6-1FDF-4555-B098-7DB68354561C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43FA2AA6-1FDF-4555-B098-7DB68354561C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C490135-5041-492F-B0F8-BC6E130C0832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C490135-5041-492F-B0F8-BC6E130C0832}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C490135-5041-492F-B0F8-BC6E130C0832}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C490135-5041-492F-B0F8-BC6E130C0832}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7449D0E-4AA8-4CEC-8215-3146562572E4}
 	EndGlobalSection
 EndGlobal

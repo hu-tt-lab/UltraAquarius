@@ -1,0 +1,12 @@
+﻿{
+    "trial": 10,
+    "trigger": 3.5,
+    "interval": {
+        "duration": 8000,
+        "waggle": 100
+    },
+    "device": {
+        "identifer": "Dev1",
+        "samplingRate": 200000
+    }
+}

@@ -14,55 +14,11 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-
+using Codeplex.Data;
 
 
 namespace Vocal
 {
-    public enum Decibel
-    {
-        dB10,
-        dB20,
-        dB30,
-        dB40,
-        dB50,
-        dB60,
-        dB70,
-        dB80,
-        dB90
-    }
-
-    public enum Tone
-    {
-        PureTone,
-        TonePip,
-        ToneBurst
-    }
-
-    public class Sound
-    {
-        public int frequency { get; set; }
-        public TimeCourse.Duration duration { get; set; }
-        public Decibel decibel { get; set; }
-        public Tone tone { get; set; }
-        public Sound()
-        {
-            frequency = 1000;
-            duration = new TimeCourse.Duration(TimeSpan.FromMilliseconds(500));
-            decibel = Decibel.dB50;
-            tone = Tone.PureTone;
-        }
-        public Sound(Sound rhs)
-        {
-            frequency = rhs.frequency;
-            duration = new TimeCourse.Duration(rhs.duration.value);
-            decibel = rhs.decibel;
-            tone = rhs.tone;
-        }
-
-    }
-
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
@@ -73,22 +29,6 @@ namespace Vocal
             Active,
             Idle,
             Buzy,
-        }
-
-        private CancellationTokenSource cancellation;
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            soundTable.ItemsSource = new[]
-            {
-                new Sound()
-            };
-
-            var files = Directory.EnumerateFiles(Directory.GetCurrentDirectory());
-            calibration.ItemsSource = files.Where(x => x.Contains("calibration.csv"));
-            calibration.SelectedIndex = 0;
-
         }
 
         private Mode mode;
@@ -139,175 +79,173 @@ namespace Vocal
             stop.IsEnabled = false;
         }
 
-        public List<Sound> Sounds
+        public MainWindow()
         {
-            get
+            InitializeComponent();
+
+            // set configure
+            try
             {
-                var result = new List<Sound>();
-                foreach (var itr in soundTable.Items)
+                using (var reader = new StreamReader("info.json"))
                 {
-                    result.Add((Sound)itr);
-                }
-                return result;
-            }
-        }
+                    var config = DynamicJson.Parse(reader.ReadToEnd());
 
-        public Dictionary<Double, List<Double>> CalibrationTable
-        {
-            get
-            {
-                using (var stream = new CsvReader(new StreamReader(calibration.SelectedValue as string)))
-                {
-                    var table = new Dictionary<Double, List<Double>>();
+                    Trial = (int)config.trial;
+                    TriggerLevel = config.trigger;
 
-                    while (stream.Read())
-                    {
-                        var row = stream.CurrentRecord.Where(x => x != "").Select(x => Double.Parse(x)).ToList();
-                        table[row[0]] = row.Skip(1).ToList();
-                    }
+                    Configure.Identifer = config.device.identifer;
+                    Configure.SamplingRate = config.device.samplingRate;
 
-                    return table;
+                    Interval.Duration = config.interval.duration;
+                    Interval.Waggle = config.interval.waggle;
+
                 }
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message).Return().End();
+            }
+
+            
+
         }
+
+        // manager to stop an async thread
+        private CancellationTokenSource Cancellation;
+
+        // output trigger level
+        public double TriggerLevel { get { return double.Parse(triggerVoltage.Text); } set { triggerVoltage.Text = value.ToString(); } }
+        // output count
+        public int Trial { get { return int.Parse(trialCount.Text); } set { trialCount.Text = value.ToString(); } }
 
         private async void OnStartClick(object sender, RoutedEventArgs e)
         {
+            // set window configure
             SetActive();
-            var interval = (duration: new TimeCourse.Duration(double.Parse(intervalDuration.Text)), waggle: new TimeCourse.Duration(double.Parse(intervalWaggle.Text)));
-            var trial = int.Parse(trialCount.Text);
+            var trial = Trial;
             progress.Value = 0;
             progress.Maximum = trial;
             progress.Minimum = 0;
-            cancellation = new CancellationTokenSource();
-            var stream = Open();
-            var random = new Random();
-            Func<Tone, double, double, TimeCourse.Duration, double, SoundWave.SoundWave> mixer = (tone, ampliude, frequency, duration, samplingRate) =>
-           {
-               switch (tone)
-               {
-                   case Tone.PureTone:
-                       return new SoundWave.PureTone(ampliude, frequency, duration, samplingRate);
-                   case Tone.ToneBurst:
-                       return new SoundWave.TonePip(ampliude, frequency, duration, samplingRate);
-                   case Tone.TonePip:
-                       return new SoundWave.TonePip(ampliude, frequency, duration, samplingRate);
-               }
-               throw new Exception("このパターンの波形はありません");
-           };
+            Cancellation = new CancellationTokenSource();
+
+            Console.WriteLine("Start to output")
+                .WriteLine("Device number: {0:g}", Configure.Identifer)
+                .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}", Configure.SoundChannel, Configure.TriggerChannel)
+                .WriteLine("Trigger Level: {0:f1}", TriggerLevel)
+                .Return()
+                .End();
+
+            // create sound set
+            var waves = Table.Table.Select(new Func<Sonant, SoundWave>(x =>
+            {
+                var amplitude = Speaker.SelectedTable[x.Frequency, x.Decibel];
+                switch (x.Tone)
+                {
+                    case ToneType.PureTone:
+                        return new PureWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
+                    case ToneType.TonePip:
+                        return new PipWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
+                    case ToneType.ToneBurst:
+                        return new BurstWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
+                    default:
+                        throw new ArgumentException("this parameter is invalid.");
+                }
+            }))
+            .Select(x => (sound: x, trigger: new Trigger(TriggerLevel, Configure.SamplingRate, x.Duration)));
+
 
             try
             {
-                using (var device = new Device(TimeSpan.FromSeconds(1)))
+                // create device buffer
+                var duration = waves.Max(x => x.sound.Duration);
+                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel))
                 {
-
-                    var sounds = Sounds;
-                    var calibration = CalibrationTable;
-                    var waves = sounds.Select(x => mixer(x.tone, calibration[x.frequency][(int)x.decibel], x.frequency, x.duration, device.SamplingRate)).ToList();
-                    var trigger = Double.Parse(triggerVoltage.Text);
-                    stream.WriteLine("start sound...");
-                    stream.WriteLine("Device Sampling Rate : {0:f3}[Hz]" + stream.NewLine, device.SamplingRate);
-
-                    var indecies = Enumerable.Range(0, trial).Select(x => new List<int>()).ToList();
+                    var table = new List<(SoundWave, Trigger)>[trial];
                     if (Random.SelectedIndex == 1)
                     {
-                        var seq = Enumerable.Range(0, waves.Count).OrderBy(x => Guid.NewGuid()).ToList();
-                        for (var i = 0; i < indecies.Count; ++i)
+                        var seq = waves.OrderBy(x => Guid.NewGuid()).ToList();
+                        for (var i = 0; i < trial; ++i)
                         {
-                            indecies[i] = seq;
+                            table[i] = seq;
                         }
                     }
                     else if (Random.SelectedIndex == 2)
                     {
-                        var seq = Enumerable.Range(0, waves.Count);
-                        for (var i = 0; i < indecies.Count; ++i)
+                        for (var i = 0; i < trial; ++i)
                         {
-                            indecies[i] = seq.OrderBy(x => Guid.NewGuid()).ToList();
+                            table[i] = waves.OrderBy(x => Guid.NewGuid()).ToList();
                         }
                     }
                     else
                     {
-                        var seq = Enumerable.Range(0, waves.Count).ToList();
-                        for (var i = 0; i < indecies.Count; ++i)
+                        var seq = waves.ToList();
+                        for (var i = 0; i < trial; ++i)
                         {
-                            indecies[i] = seq;
+                            table[i] = seq;
                         }
                     }
 
                     for (var i = 0; i < trial; ++i)
                     {
-                        foreach (var itr in indecies[i])
+                        foreach (var (signal, trigger) in table[i])
                         {
-                            var duration = interval.duration + random.NextDouble() * interval.waggle;
-                            stream.WriteLine("Trial Count : {0:d}", i);
-                            stream.WriteLine("Tone : {0:g}", sounds[itr].tone);
-                            stream.WriteLine("Frequency : {0:f3} [hz]", sounds[itr].frequency);
-                            stream.WriteLine("Decibel : {0:g} [dB]", sounds[itr].decibel.ToString());
-                            stream.WriteLine("Duration : {0:f3} [ms]", sounds[itr].duration.milliseconds);
-                            stream.WriteLine("Interval : {0:f3} [ms]", sounds[itr].duration.milliseconds);
-                            stream.WriteLine();
-                            Update(stream);
-
-                            device.Output(waves[itr].values, trigger);
-                            await Task.Delay(duration.value, cancellation.Token);
+                            device.Output(signal.Wave, trigger.Wave);
+                            Console.WriteLine("Output Sound!")
+                                .Return()
+                                .End();
+                            await Task.Delay(Interval.Interval, Cancellation.Token);
                         }
                         progress.Value = i + 1;
-                     }
+                    }
                 }
             }
             catch (TaskCanceledException)
             {
-                stream.WriteLine("stop sound...");
-                Update(stream);
+                Console.WriteLine("Stop to output sound").End();
             }
             catch (Exception error)
             {
                 MessageBox.Show(error.Message);
             }
-            finally
+
+            // write sound list
+            var root = "result";
+            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+            using (var stream = new SonantWriter(string.Format("{0:g}/result.csv", root)))
             {
-                SetIdle();
+                stream.Write(Table.Table);
             }
+
+            SetIdle();
         }
 
         private void OnStop(object sender, RoutedEventArgs e)
         {
-            cancellation.Cancel();
+            Cancellation.Cancel();
             SetBuzy();
         }
 
         private void OnAddClick(object sender, RoutedEventArgs e)
         {
-            var value = Sounds;
-            if (value.Count == 0)
-            {
-                value.Add(new Sound());
-            }
-            else
-            {
-                value.Add(new Sound(value[value.Count - 1]));
-            }
-            soundTable.ItemsSource = value.ToArray();
+            Table.Push();
         }
         private void OnDeleteClick(object sender, RoutedEventArgs e)
         {
-            var value = Sounds;
-            var selected = soundTable.SelectedIndex;
-            if (selected >= 0)
-            {
-                value.RemoveAt(selected);
-                soundTable.ItemsSource = value.ToArray();
-            }
+            Table.Pop();
         }
 
-        public StringWriter Open()
+        private void OnChanged(object sender, EventArgs e)
         {
-            return new StringWriter(new StringBuilder(console.Text));
-        }
-        public void Update(StringWriter stream)
-        {
-            console.Text = stream.ToString();
-            console.ScrollToEnd();
+            Table.Decibel.Clear();
+            foreach(var x in Speaker.SelectedTable.Column)
+            {
+                Table.Decibel.Add(x);
+            }
+            Table.Frequency.Clear();
+            foreach (var x in Speaker.SelectedTable.Row)
+            {
+                Table.Frequency.Add(x);
+            }
         }
 
     }
