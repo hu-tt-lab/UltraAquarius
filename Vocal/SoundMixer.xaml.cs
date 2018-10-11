@@ -49,18 +49,18 @@ namespace Vocal
                 switch (x.Tone)
                 {
                     case PureToneType.PureTone:
-                        return new PureWave(x.Frequency, amplitude, SamplingRate, x.Duration/1000);
+                        return new PureWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
                     case PureToneType.ToneBurst:
-                        return new BurstWave(x.Frequency, amplitude, SamplingRate, x.Duration/1000);
+                        return new BurstWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
                     case PureToneType.TonePip:
-                        return new PipWave(x.Frequency, amplitude, SamplingRate, x.Duration/1000);
+                        return new PipWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
                 }
             }
             else if (type == SignalType.Click)
             {
                 var x = ClickTone.Find(name);
                 var amplitude = ClickTone.Correction(x.Decibel);
-                return new ClickWave(amplitude, SamplingRate, x.Duration/1000);
+                return new ClickWave(amplitude, x.Decibel, SamplingRate, x.Duration/1000);
             }
             else if (type == SignalType.User)
             {

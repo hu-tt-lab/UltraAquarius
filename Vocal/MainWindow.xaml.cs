@@ -139,17 +139,17 @@ namespace Vocal
                     .Return()
                     .End();
 
-                var signals = Output.List.Select(x => (Name: x.Name, Signal: Mixer.Get(x.Name, x.Type)));
+                var signals = Output.List.Select(x => (Name: x.Name, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
                 var duration = signals.Max(x => x.Signal.Duration);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
 
                 // create device buffer
                 using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel))
                 {
-                    var table = new List<(string Name, SignalWave Signal)>[trial];
+                    var table = new List<int>[trial];
                     if (Random.SelectedIndex == 1)
                     {
-                        var seq = signals.OrderBy(x => Guid.NewGuid()).ToList();
+                        var seq = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
                         for (var i = 0; i < trial; ++i)
                         {
                             table[i] = seq;
@@ -159,12 +159,12 @@ namespace Vocal
                     {
                         for (var i = 0; i < trial; ++i)
                         {
-                            table[i] = signals.OrderBy(x => Guid.NewGuid()).ToList();
+                            table[i] = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
                         }
                     }
                     else
                     {
-                        var seq = signals.ToList();
+                        var seq = Enumerable.Range(0, signals.Count()).ToList();
                         for (var i = 0; i < trial; ++i)
                         {
                             table[i] = seq;
@@ -173,16 +173,59 @@ namespace Vocal
 
                     for (var i = 0; i < trial; ++i)
                     {
-                        foreach (var signal in table[i])
+                        foreach (var index in table[i])
                         {
-                            device.Output(signal.Signal.Wave, trigger.Wave);
+                            var signal = signals[index];
                             Console.WriteLine("Output Sound!")
                                 .WriteLine("Name: {0:g}", signal.Name)
+                                .WriteLine("Type: {0:g}", signal.Type)
                                 .Return()
                                 .End();
+                            device.Output(signal.Signal.Wave, trigger.Wave);
                             await Task.Delay(Interval.Interval, Cancellation.Token);
                         }
                         Progress.Value = i + 1;
+                    }
+
+                    // log to json
+                    using (var writer = new StreamWriter(string.Format("{0:g}result.json", DateTime.Now.ToString("yyyyMMdd-HHmm-"))))
+                    {
+                        var contents = DynamicJson.Serialize(table.Select(x => x.Select(i =>
+                        {
+                            var variable = signals[i];
+                            if (variable.Type == SignalType.Click)
+                            {
+                                var wave = variable.Signal as ClickWave;
+                                return (object)(new { name = variable.Name, duration = wave.Duration, decibel = wave.Decibel, type = variable.Type.ToString() });
+                            }
+                            else if (variable.Type == SignalType.Pure)
+                            {
+                                var pure = variable.Signal as PureWave;
+                                if (pure != null)
+                                {
+                                    return new { name = variable.Name, duration = pure.Duration, decibel = pure.Decibel, frequency = pure.Frequency, type = variable.Type.ToString() };
+                                }
+                                var pip = variable.Signal as PipWave;
+                                if (pip != null)
+                                {
+                                    return new { name = variable.Name, duration = pip.Duration, decibel = pip.Decibel, frequency = pip.Frequency, type = variable.Type.ToString() };
+                                }
+                                var burst = variable.Signal as BurstWave;
+                                if (burst != null)
+                                {
+                                    return new { name = variable.Name, duration = burst.Duration, decibel = burst.Decibel, frequency = burst.Frequency, type = variable.Type.ToString() };
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("this param is invalid.");
+                                }
+                            }
+                            else
+                            {
+                                throw new ArgumentException("this type is invalid.");
+                            }
+                        }).ToList()).ToList());
+                        writer.WriteLine(contents);
                     }
                 }
             }

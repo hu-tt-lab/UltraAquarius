@@ -10,16 +10,18 @@ namespace Vocal
     /// </summary>
     public abstract class SignalWave
     {
-        public SignalWave(double sampling, double duration)
+        public SignalWave(double sampling, double duration, double decibel)
         {
             SamplingRate = sampling;
             Duration = duration;
+            Decibel = decibel;
         }
         public abstract IEnumerable<double> Wave { get; }
 
         public double SamplingRate { get; }
         public double Duration { get; }
         public double Size { get { return (int)(SamplingRate * Duration); } }
+        public double Decibel { get; }
 
     }
 
@@ -28,8 +30,8 @@ namespace Vocal
     /// </summary>
     public class PureWave : SignalWave
     {
-        public PureWave(double frequency, double amplitude,
-            double sampling, double duration) : base(sampling, duration)
+        public PureWave(double frequency, double amplitude, double decibel,
+            double sampling, double duration) : base(sampling, duration, decibel)
         {
             Gain = amplitude;
             Frequency = frequency;
@@ -56,8 +58,8 @@ namespace Vocal
     /// </summary>
     public class PipWave : SignalWave
     {
-        public PipWave(double frequency, double amplitude,
-            double sampling, double duration) : base(sampling, duration)
+        public PipWave(double frequency, double amplitude, double decibel,
+            double sampling, double duration) : base(sampling, duration, decibel)
         {
             Gain = amplitude;
             Frequency = frequency;
@@ -89,8 +91,8 @@ namespace Vocal
     /// </summary>
     public class BurstWave : SignalWave
     {
-        public BurstWave(double frequency, double amplitude,
-            double sampling, double duration) : base(sampling, duration)
+        public BurstWave(double frequency, double amplitude, double decibel,
+            double sampling, double duration) : base(sampling, duration, decibel)
         {
             Gain = amplitude;
             Frequency = frequency;
@@ -123,7 +125,8 @@ namespace Vocal
 
     public class ClickWave : SignalWave
     {
-        public ClickWave(double amplitude, double sampling, double duration): base(sampling, duration)
+        public ClickWave(double amplitude, double decibel, double sampling, double duration)
+            : base(sampling, duration, decibel)
         {
             Gain = amplitude;
         }
@@ -144,7 +147,7 @@ namespace Vocal
 
     public class Trigger : SignalWave
     {
-        public Trigger(double level, double sampling, double duration) : base(sampling, duration)
+        public Trigger(double level, double sampling, double duration) : base(sampling, duration, 0)
         {
             Level = level;
         }
