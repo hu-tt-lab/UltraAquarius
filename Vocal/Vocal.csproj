@@ -73,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClickSoundMixer.xaml.cs">
+      <DependentUpon>ClickSoundMixer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeviceControl.xaml.cs">
       <DependentUpon>DeviceControl.xaml</DependentUpon>
     </Compile>
@@ -80,15 +83,29 @@
     <Compile Include="IntervalControl.xaml.cs">
       <DependentUpon>IntervalControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SoundTable.xaml.cs">
-      <DependentUpon>SoundTable.xaml</DependentUpon>
+    <Compile Include="OutputList.xaml.cs">
+      <DependentUpon>OutputList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PureToneMixer.xaml.cs">
+      <DependentUpon>PureToneMixer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SoundMixer.xaml.cs">
+      <DependentUpon>SoundMixer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SignalWave.cs" />
     <Compile Include="SpeakerControl.xaml.cs">
       <DependentUpon>SpeakerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="TextConsole.xaml.cs">
       <DependentUpon>TextConsole.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserSoundMixer.xaml.cs">
+      <DependentUpon>UserSoundMixer.xaml</DependentUpon>
+    </Compile>
+    <Page Include="ClickSoundMixer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DeviceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -110,7 +127,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SoundTable.xaml">
+    <Page Include="OutputList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PureToneMixer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SoundMixer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TextConsole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserSoundMixer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,6 +170,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="181004_1-8_octave_calibrated_amplitude.psclb" />
+    <None Include="181004_click_calibrated_amplitude.csclb" />
     <None Include="info.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -154,12 +185,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TimeCourse\TimeCourse.csproj">
-      <Project>{43fa2aa6-1fdf-4555-b098-7db68354561c}</Project>
-      <Name>TimeCourse</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

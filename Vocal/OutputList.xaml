@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Vocal.OutputList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:Vocal"
+             mc:Ignorable="d" 
+             d:DesignHeight="540" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="SignalType" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:SignalType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <GroupBox Header="Output List" Height="540">
+            <Grid>
+                <DataGrid x:Name="TableView" Margin="0,10,0,35" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False" ItemsSource="{Binding}">
+                    <DataGrid.Columns>
+                        <!--vaild check box-->
+                        <DataGridTemplateColumn IsReadOnly="True" Header="Valid">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Valid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <!--signal type combo box-->
+                        <DataGridComboBoxColumn Header="Type" SelectedItemBinding="{Binding Type}"  ItemsSource="{Binding Source={StaticResource SignalType}}"/>
+                        <!--signal variable text box-->
+                        <DataGridTextColumn Header="Signal Name" Binding="{Binding Variable}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <Button Content="add" HorizontalAlignment="Left" Margin="0,493,0,0" VerticalAlignment="Top" Width="75" Click="OnAdd"/>
+                <Button Content="delete" HorizontalAlignment="Left" Margin="80,493,0,0" VerticalAlignment="Top" Width="75" Click="OnDelete"/>
+
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</UserControl>
