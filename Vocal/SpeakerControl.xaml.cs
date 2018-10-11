@@ -71,9 +71,10 @@ namespace Vocal
         {
             InitializeComponent();
 
+            var ext = string.Format(@"{0:g}$", Extension);
             Path = new ObservableCollection<string>(Directory
                 .EnumerateFiles(Directory.GetCurrentDirectory())
-                .Where(x => Regex.IsMatch(x, @".csv$")));
+                .Where(x => Regex.IsMatch(x, string.Format(@"{0:g}$", Extension))));
             foreach (var e in Path)
             {
                 Calibrations.Add(read(e));
@@ -93,17 +94,17 @@ namespace Vocal
         {
             using (var dialog = new System.Windows.Forms.OpenFileDialog())
             {
-                dialog.Filter = "(*.csv)|*.*";
+                dialog.Filter = string.Format("(*{0:g})|*.*", Extension);
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     if (!Path.Contains(dialog.FileName))
                     {
                         Path.Add(dialog.FileName);
+                        Calibrations.Add(read(dialog.FileName));
                         if (CalibrationList.SelectedIndex < 0)
                         {
                             CalibrationList.SelectedIndex = 0;
                         }
-                        Calibrations.Add(read(dialog.FileName));
                     }
                 }
             }
@@ -152,5 +153,6 @@ namespace Vocal
             return table;
         }
 
+        public String Extension { get; set; } = ".csv";
     }
 }
