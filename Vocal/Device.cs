@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using NationalInstruments.DAQmx;
 
+
 namespace Vocal
 {
     public class Device : IDisposable
@@ -25,6 +26,8 @@ namespace Vocal
 
             var voltage = (max: 10, min: -10);
 
+#if DEBUG
+#else
             task_ = new Task();
             foreach (var e in channels)
             {
@@ -34,12 +37,19 @@ namespace Vocal
                 SampleQuantityMode.FiniteSamples, data_.GetLength(1));
 
             task_.Done += (sender, e) => task_.Stop();
-
+#endif
         }
 
         public void Output(params IEnumerable<double>[] waves)
         {
-            data_.Initialize();
+            for(var u = 0; u < data_.Rank; ++u)
+            {
+                for(var v = 0; v < data_.Length / data_.Rank; ++v)
+                {
+                    data_[u, v] = 0;
+                }
+            }
+
             foreach (var (k, v) in waves.Select((value, index) => (index, value)))
             {
                 foreach (var (i, e) in v.Select((value, index) => (index, value)))
@@ -48,16 +58,22 @@ namespace Vocal
                 }
             }
 
+#if DEBUG
+#else
             var stream = new AnalogMultiChannelWriter(task_.Stream);
             stream.WriteMultiSample(false, data_);
             task_.Start();
-            task_.WaitUntilDone();
 
+            task_.WaitUntilDone();
+#endif
         }
 
         public void Dispose()
         {
+#if DEBUG
+#else
             task_.Dispose();
+#endif
         }
     }
 }
