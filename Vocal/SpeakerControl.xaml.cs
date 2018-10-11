@@ -71,22 +71,31 @@ namespace Vocal
         {
             InitializeComponent();
 
-            var ext = string.Format(@"{0:g}$", Extension);
-            Path = new ObservableCollection<string>(Directory
-                .EnumerateFiles(Directory.GetCurrentDirectory())
-                .Where(x => Regex.IsMatch(x, string.Format(@"{0:g}$", Extension))));
-            foreach (var e in Path)
-            {
-                Calibrations.Add(read(e));
-            }
-
             // Data Binding
             CalibrationList.ItemsSource = Path;
 
         }
 
+        public void Search()
+        {
+           ;
+            foreach (var e in Directory.EnumerateFiles(Directory.GetCurrentDirectory())
+                .Where(x => Regex.IsMatch(x, string.Format(@"{0:g}$", Extension))))
+            {
+                if (!Path.Contains(e))
+                {
+                    Path.Add(e);
+                    Calibrations.Add(read(e));
+                    if (CalibrationList.SelectedIndex < 0)
+                    {
+                        CalibrationList.SelectedIndex = 0;
+                    }
+                }
+            }
+        }
+
         public string Selected { get { return CalibrationList.SelectedItem.ToString(); } }
-        public ObservableCollection<string> Path { get; set; }
+        public ObservableCollection<string> Path { get; set; } = new ObservableCollection<string>();
         public List<PivotTable<double>> Calibrations { get; } = new List<PivotTable<double>>();
         public PivotTable<double> SelectedTable { get { return Calibrations[CalibrationList.SelectedIndex];  } }
 

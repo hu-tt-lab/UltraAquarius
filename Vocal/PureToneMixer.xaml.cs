@@ -43,6 +43,7 @@ namespace Vocal
         {
             // Initialize Components
             InitializeComponent();
+            Speaker.Search();
 
             // Data Binding
             (TableView.Columns[2] as DataGridComboBoxColumn).ItemsSource = Decibel;

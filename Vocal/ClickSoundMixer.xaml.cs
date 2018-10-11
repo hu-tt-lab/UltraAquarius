@@ -30,6 +30,8 @@ namespace Vocal
         public ClickSoundMixer()
         {
             InitializeComponent();
+
+            Speaker.Search();
             // Data Binding
             (TableView.Columns[1] as DataGridComboBoxColumn).ItemsSource = Decibel;
             TableView.DataContext= Rows;
