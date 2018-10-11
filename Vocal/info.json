@@ -7,6 +7,6 @@
     },
     "device": {
         "identifer": "Dev1",
-        "samplingRate": 200000
+        "samplingRate": 500000
     }
 }
