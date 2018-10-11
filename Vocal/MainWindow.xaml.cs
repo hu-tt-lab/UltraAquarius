@@ -57,26 +57,29 @@ namespace Vocal
         public void SetIdle()
         {
             mode = Mode.Idle;
-            SoundList.IsEnabled = true;
             Option.IsEnabled = true;
-            start.IsEnabled = true;
-            stop.IsEnabled = false;
+            Start.IsEnabled = true;
+            Stop.IsEnabled = false;
+            Mixer.UnLock();
+            Output.IsEnabled = true;
         }
         public void SetActive()
         {
             mode = Mode.Active;
-            SoundList.IsEnabled = false;
             Option.IsEnabled = false;
-            start.IsEnabled = false;
-            stop.IsEnabled = true;
+            Start.IsEnabled = false;
+            Stop.IsEnabled = true;
+            Mixer.Lock(Configure.SamplingRate);
+            Output.IsEnabled = false;
         }
         public void SetBuzy()
         {
             mode = Mode.Buzy;
-            SoundList.IsEnabled = false;
             Option.IsEnabled = false;
-            start.IsEnabled = false;
-            stop.IsEnabled = false;
+            Start.IsEnabled = false;
+            Stop.IsEnabled = false;
+            Mixer.Lock(Configure.SamplingRate);
+            Output.IsEnabled = false;
         }
 
         public MainWindow()
@@ -106,8 +109,6 @@ namespace Vocal
                 Console.WriteLine(e.Message).Return().End();
             }
 
-            
-
         }
 
         // manager to stop an async thread
@@ -120,50 +121,35 @@ namespace Vocal
 
         private async void OnStartClick(object sender, RoutedEventArgs e)
         {
-            // set window configure
-            SetActive();
-            var trial = Trial;
-            progress.Value = 0;
-            progress.Maximum = trial;
-            progress.Minimum = 0;
-            Cancellation = new CancellationTokenSource();
-
-            Console.WriteLine("Start to output")
-                .WriteLine("Device number: {0:g}", Configure.Identifer)
-                .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}", Configure.SoundChannel, Configure.TriggerChannel)
-                .WriteLine("Trigger Level: {0:f1}", TriggerLevel)
-                .Return()
-                .End();
-
-            // create sound set
-            var waves = Table.Table.Select(new Func<Sonant, SoundWave>(x =>
-            {
-                var amplitude = Speaker.SelectedTable[x.Frequency, x.Decibel];
-                switch (x.Tone)
-                {
-                    case ToneType.PureTone:
-                        return new PureWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
-                    case ToneType.TonePip:
-                        return new PipWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
-                    case ToneType.ToneBurst:
-                        return new BurstWave(x.Frequency, amplitude, Configure.SamplingRate, x.Duration);
-                    default:
-                        throw new ArgumentException("this parameter is invalid.");
-                }
-            }))
-            .Select(x => (sound: x, trigger: new Trigger(TriggerLevel, Configure.SamplingRate, x.Duration)));
-
 
             try
             {
+                // set window configure
+                SetActive();
+                var trial = Trial;
+                Progress.Value = 0;
+                Progress.Maximum = trial;
+                Progress.Minimum = 0;
+                Cancellation = new CancellationTokenSource();
+
+                Console.WriteLine("Start to output")
+                    .WriteLine("Device number: {0:g}", Configure.Identifer)
+                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}", Configure.SoundChannel, Configure.TriggerChannel)
+                    .WriteLine("Trigger Level: {0:f1}", TriggerLevel)
+                    .Return()
+                    .End();
+
+                var signals = Output.List.Select(x => (Name: x.Name, Signal: Mixer.Get(x.Name, x.Type)));
+                var duration = signals.Max(x => x.Signal.Duration);
+                var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
+
                 // create device buffer
-                var duration = waves.Max(x => x.sound.Duration);
                 using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel))
                 {
-                    var table = new List<(SoundWave, Trigger)>[trial];
+                    var table = new List<(string Name, SignalWave Signal)>[trial];
                     if (Random.SelectedIndex == 1)
                     {
-                        var seq = waves.OrderBy(x => Guid.NewGuid()).ToList();
+                        var seq = signals.OrderBy(x => Guid.NewGuid()).ToList();
                         for (var i = 0; i < trial; ++i)
                         {
                             table[i] = seq;
@@ -173,12 +159,12 @@ namespace Vocal
                     {
                         for (var i = 0; i < trial; ++i)
                         {
-                            table[i] = waves.OrderBy(x => Guid.NewGuid()).ToList();
+                            table[i] = signals.OrderBy(x => Guid.NewGuid()).ToList();
                         }
                     }
                     else
                     {
-                        var seq = waves.ToList();
+                        var seq = signals.ToList();
                         for (var i = 0; i < trial; ++i)
                         {
                             table[i] = seq;
@@ -187,15 +173,16 @@ namespace Vocal
 
                     for (var i = 0; i < trial; ++i)
                     {
-                        foreach (var (signal, trigger) in table[i])
+                        foreach (var signal in table[i])
                         {
-                            device.Output(signal.Wave, trigger.Wave);
+                            device.Output(signal.Signal.Wave, trigger.Wave);
                             Console.WriteLine("Output Sound!")
+                                .WriteLine("Name: {0:g}", signal.Name)
                                 .Return()
                                 .End();
                             await Task.Delay(Interval.Interval, Cancellation.Token);
                         }
-                        progress.Value = i + 1;
+                        Progress.Value = i + 1;
                     }
                 }
             }
@@ -208,14 +195,6 @@ namespace Vocal
                 MessageBox.Show(error.Message);
             }
 
-            // write sound list
-            var root = "result";
-            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
-            using (var stream = new SonantWriter(string.Format("{0:g}/result.csv", root)))
-            {
-                stream.Write(Table.Table);
-            }
-
             SetIdle();
         }
 
@@ -223,29 +202,6 @@ namespace Vocal
         {
             Cancellation.Cancel();
             SetBuzy();
-        }
-
-        private void OnAddClick(object sender, RoutedEventArgs e)
-        {
-            Table.Push();
-        }
-        private void OnDeleteClick(object sender, RoutedEventArgs e)
-        {
-            Table.Pop();
-        }
-
-        private void OnChanged(object sender, EventArgs e)
-        {
-            Table.Decibel.Clear();
-            foreach(var x in Speaker.SelectedTable.Column)
-            {
-                Table.Decibel.Add(x);
-            }
-            Table.Frequency.Clear();
-            foreach (var x in Speaker.SelectedTable.Row)
-            {
-                Table.Frequency.Add(x);
-            }
         }
 
     }

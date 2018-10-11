@@ -5,31 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control" Height="600" Width="800">
-
-    
+        Title="Vocal Control" Height="595" Width="1020" ResizeMode="CanMinimize">
     <Grid>
-        
-        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="419,223,0,0" VerticalAlignment="Top" Width="363">
+        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="659,214,0,0" VerticalAlignment="Top" Width="353">
             <Grid>
-                <ProgressBar x:Name="progress" HorizontalAlignment="Left" Height="15" Margin="10,35,0,0" VerticalAlignment="Top" Width="331"/>
-                <Button x:Name="start" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStartClick"/>
-                <Button x:Name="stop" Content="Stop" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStop"/>
+                <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="15" Margin="10,35,0,0" VerticalAlignment="Top" Width="280"/>
+                <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStartClick"/>
+                <Button x:Name="Stop" Content="Stop" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStop"/>
                 <local:TextConsole x:Name="Console" Margin="10,55,10,10"/>
             </Grid>
         </GroupBox>
 
-        <TabControl x:Name="Option" HorizontalAlignment="Left" Height="208" Margin="419,10,0,0" VerticalAlignment="Top" Width="363">
+        <TabControl x:Name="Option" HorizontalAlignment="Left" Height="198" Margin="659,5,0,0" VerticalAlignment="Top" Width="353">
             <TabItem Header="Trial">
                 <Grid Background="#FFE5E5E5">
                     <local:IntervalControl x:Name="Interval"/>
+
                     <Label Content="Trial Count" HorizontalAlignment="Left" Margin="175,10,0,0" VerticalAlignment="Top"/>
                     <TextBox x:Name="trialCount" HorizontalAlignment="Left" Height="23" Margin="175,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="20"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Speaker">
-                <Grid Background="#FFE5E5E5">
-                    <local:SpeakerControl x:Name="Speaker" Changed="OnChanged"/>
+
+                    <Label Content="Random" HorizontalAlignment="Left" Margin="175,103,0,0" VerticalAlignment="Top"/>
+                    <ComboBox x:Name="Random" HorizontalAlignment="Left" Margin="175,129,0,0" VerticalAlignment="Top" Width="139" SelectedIndex="0">
+                        <ComboBoxItem>Not</ComboBoxItem>
+                        <ComboBoxItem>Partial Random</ComboBoxItem>
+                        <ComboBoxItem>Full Random</ComboBoxItem>
+                    </ComboBox>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Trigger">
@@ -44,19 +45,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        
-        <GroupBox x:Name="SoundList" Header="Sound List" HorizontalAlignment="Left" Height="549" Margin="10,10,0,0" VerticalAlignment="Top" Width="409">
-            <Grid>
-                <Button Content="Add" HorizontalAlignment="Left" Margin="0,480,0,0" VerticalAlignment="Top" Width="75" Click="OnAddClick"/>
-                <Button Content="Delete" HorizontalAlignment="Left" Margin="80,480,0,0" VerticalAlignment="Top" Width="75" Click="OnDeleteClick"/>
-                <ComboBox x:Name="Random" HorizontalAlignment="Left" Margin="258,480,0,0" VerticalAlignment="Top" Width="139" SelectedIndex="0">
-                    <ComboBoxItem>Not</ComboBoxItem>
-                    <ComboBoxItem>Partial Random</ComboBoxItem>
-                    <ComboBoxItem>Full Random</ComboBoxItem>
-                </ComboBox>
-                <local:SoundTable x:Name="Table" Margin="10,22,10,69"/>
-            </Grid>
-        </GroupBox>
-        
+
+        <local:SoundMixer x:Name="Mixer" Margin="222,5,310,0" Height="540"  Width ="480" VerticalAlignment="Top"></local:SoundMixer>
+        <local:OutputList x:Name="Output" Height="540" Margin="0,5,790,10" />
     </Grid>
 </Window>
