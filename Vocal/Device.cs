@@ -22,7 +22,7 @@ namespace Vocal
             Channels = channels;
             SamplingRate = samplingRate;
             Duration = duration;
-            data_ = new double[Channels.Length, Capacity];
+            data_ = new double[Channels.Length, Capacity + 10];
 
             var voltage = (max: 10, min: -10);
 
