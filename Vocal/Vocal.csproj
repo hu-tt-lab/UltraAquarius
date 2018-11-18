@@ -73,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AMToneMixer.xaml.cs">
+      <DependentUpon>AMToneMixer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClickSoundMixer.xaml.cs">
       <DependentUpon>ClickSoundMixer.xaml</DependentUpon>
     </Compile>
@@ -102,6 +105,10 @@
     <Compile Include="UserSoundMixer.xaml.cs">
       <DependentUpon>UserSoundMixer.xaml</DependentUpon>
     </Compile>
+    <Page Include="AMToneMixer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ClickSoundMixer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

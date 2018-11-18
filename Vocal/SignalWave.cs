@@ -6,7 +6,7 @@ namespace Vocal
 {
 
     /// <summary>
-    /// sound wave data
+    /// sound wave generator
     /// </summary>
     public abstract class SignalWave
     {
@@ -26,7 +26,7 @@ namespace Vocal
     }
 
     /// <summary>
-    /// pure tone wave data
+    /// pure tone wave generator
     /// </summary>
     public class PureWave : SignalWave
     {
@@ -54,7 +54,7 @@ namespace Vocal
     }
 
     /// <summary>
-    /// tone pip wave data
+    /// tone pip wave generator
     /// </summary>
     public class PipWave : SignalWave
     {
@@ -87,7 +87,7 @@ namespace Vocal
     }
 
     /// <summary>
-    /// tone pip wave data
+    /// tone pip wave generator
     /// </summary>
     public class BurstWave : SignalWave
     {
@@ -123,6 +123,9 @@ namespace Vocal
 
     }
 
+    /// <summary>
+    /// click tone wave generator
+    /// </summary>
     public class ClickWave : SignalWave
     {
         public ClickWave(double amplitude, double decibel, double sampling, double duration)
@@ -145,6 +148,40 @@ namespace Vocal
         public double Gain { get; }
     }
 
+
+    /// <summary>
+    /// Amplitude Modulation Wave
+    /// </summary>
+    public class AmplitudeModulationWave : SignalWave
+    {
+        public AmplitudeModulationWave(double frequency, double amplitude, double modulation, double decibel, double sampling, double duration)
+            : base(sampling, duration, decibel)
+        {
+            Frequency = frequency;
+            Gain = amplitude;
+            Modulation = modulation;
+        }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    yield return Gain * Math.Sin(i * Frequency * 2 * Math.PI / SamplingRate) * Math.Sin(i * Modulation * 2 * Math.PI / SamplingRate);
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Gain { get; }
+        public double Modulation { get; }
+
+    }
+
+    /// <summary>
+    /// trigger wave generator
+    /// </summary>
     public class Trigger : SignalWave
     {
         public Trigger(double level, double sampling, double duration) : base(sampling, duration, 0)

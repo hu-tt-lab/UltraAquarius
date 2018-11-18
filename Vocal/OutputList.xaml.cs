@@ -22,6 +22,7 @@ namespace Vocal
     public enum SignalType {
         Pure,
         Click,
+        Modulation,
         User
     }
 

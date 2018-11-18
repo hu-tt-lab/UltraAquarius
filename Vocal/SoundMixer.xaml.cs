@@ -30,6 +30,7 @@ namespace Vocal
             SamplingRate = sampling;
             PureTone.Lock();
             ClickTone.Lock();
+            ModulationTone.Lock();
             UserDefined.Lock();
         }
 
@@ -37,6 +38,7 @@ namespace Vocal
         {
             PureTone.Unlock();
             ClickTone.Unlock();
+            ModulationTone.Unlock();
             UserDefined.Unlock();
         }
 
@@ -62,16 +64,23 @@ namespace Vocal
                 var amplitude = ClickTone.Correction(x.Decibel);
                 return new ClickWave(amplitude, x.Decibel, SamplingRate, x.Duration/1000);
             }
+            else if (type == SignalType.Modulation)
+            {
+                var x = ModulationTone.Find(name);
+                var amplitude = ModulationTone.Correction(x.Frequency, x.Decibel);
+                return new AmplitudeModulationWave(x.Frequency, amplitude, x.Modulation, x.Decibel, SamplingRate, x.Duration / 1000);
+            }
             else if (type == SignalType.User)
             {
                 var x = UserDefined.Find(name);
-                // 保守
-                return new Trigger(3.5, SamplingRate, 1);
+                throw new ArgumentException("application does not support this sound type.");
+
             }
 
             throw new ArgumentException("application does not support this sound type.");
         }
 
         public double SamplingRate { get; set; }
+
     }
 }

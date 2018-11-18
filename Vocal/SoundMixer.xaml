@@ -5,22 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Vocal"
              mc:Ignorable="d" 
-             d:DesignHeight="540" d:DesignWidth="434">
+             d:DesignHeight="540" Width="492">
     <Grid>
-        <TabControl HorizontalAlignment="Left" Height="540" VerticalAlignment="Top" Width="434">
-            <TabItem Header="Pure Tone">
+        <TabControl VerticalAlignment="Top" Margin="0,0,15,0">
+            <TabItem Header="Pure Tone" >
                 <Grid Background="#FFE5E5E5">
-                    <local:PureToneMixer  x:Name="PureTone" HorizontalAlignment="Left" Height="500" Margin="4,2,0,0" VerticalAlignment="Top" Width="420"/>
+                    <local:PureToneMixer  x:Name="PureTone" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Click Tone">
                 <Grid Background="#FFE5E5E5">
-                    <local:ClickSoundMixer  x:Name="ClickTone" HorizontalAlignment="Left" Height="500" Margin="4,2,0,0" VerticalAlignment="Top" Width="420"/>
+                    <local:ClickSoundMixer  x:Name="ClickTone" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="AM Tone">
+                <Grid Background="#FFE5E5E5">
+                    <local:AmToneMixer  x:Name="ModulationTone" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="User Defined Tone">
                 <Grid Background="#FFE5E5E5">
-                    <local:UserSoundMixer x:Name="UserDefined" HorizontalAlignment="Left" Height="500" Margin="4,2,0,0" VerticalAlignment="Top" Width="420"/>
+                    <local:UserSoundMixer x:Name="UserDefined" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="471" />
                 </Grid>
             </TabItem>
         </TabControl>
