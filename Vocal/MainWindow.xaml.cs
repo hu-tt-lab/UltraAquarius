@@ -220,11 +220,16 @@ namespace Vocal
                                     throw new ArgumentException("this param is invalid.");
                                 }
                             }
+                            else if (variable.Type == SignalType.Modulation)
+                            {
+                                var signal = variable.Signal as AmplitudeModulationWave;
+                                return new { name = variable.Name, duration = signal.Duration, decibel = signal.Decibel, frequency = signal.Frequency, type = variable.Type.ToString(), modulation = signal.Modulation };
+                            }
                             else
                             {
                                 throw new ArgumentException("this type is invalid.");
                             }
-                        }).ToList()).ToList());
+                        }).ToList()).ToList().SelectMany(x=>x));
                         writer.WriteLine(contents);
                     }
                 }
