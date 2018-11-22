@@ -15,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Codeplex.Data;
-
+using Ivi.Visa.Interop;
 
 namespace Vocal
 {
@@ -82,13 +82,17 @@ namespace Vocal
             Output.IsEnabled = false;
         }
 
+        public FunGene Fungene = new FunGene();
+        public ResourceManager RM = new ResourceManager();
+        public FormattedIO488 DMM = new FormattedIO488();
+
         public MainWindow()
         {
             InitializeComponent();
-
             // set configure
             try
             {
+                
                 using (var reader = new StreamReader("info.json"))
                 {
                     var config = DynamicJson.Parse(reader.ReadToEnd());
@@ -103,6 +107,7 @@ namespace Vocal
                     Interval.Waggle = config.interval.waggle;
 
                 }
+
             }
             catch (FileNotFoundException e)
             {
@@ -116,6 +121,8 @@ namespace Vocal
 
         // output trigger level
         public double TriggerLevel { get { return double.Parse(triggerVoltage.Text); } set { triggerVoltage.Text = value.ToString(); } }
+        // output Function Generator trigger level
+        public double FunGeneTriggerLevel { get { return double.Parse(fungenetriggerVoltage.Text); } set { fungenetriggerVoltage.Text = value.ToString(); } }
         // output count
         public int Trial { get { return int.Parse(trialCount.Text); } set { trialCount.Text = value.ToString(); } }
 
@@ -134,17 +141,18 @@ namespace Vocal
 
                 Console.WriteLine("Start to output")
                     .WriteLine("Device number: {0:g}", Configure.Identifer)
-                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}", Configure.SoundChannel, Configure.TriggerChannel)
-                    .WriteLine("Trigger Level: {0:f1}", TriggerLevel)
+                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}, FunGene = {2:g}", Configure.SoundChannel, Configure.TriggerChannel, Configure.FunGeneChannel)
+                    .WriteLine("Trigger Level: {0:f1} Function Generator Trigger Level: {1:f1}", TriggerLevel, FunGeneTriggerLevel)
                     .Return()
                     .End();
 
                 var signals = Output.List.Select(x => (Name: x.Name, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
                 var duration = signals.Max(x => x.Signal.Duration);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
+                var nonuse = new NonUse(Configure.SamplingRate, duration);
 
                 // create device buffer
-                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel))
+                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel,Configure.FunGeneChannel))
                 {
                     var table = new List<int>[trial];
                     if (Random.SelectedIndex == 1)
@@ -181,7 +189,22 @@ namespace Vocal
                                 .WriteLine("Type: {0:g}", signal.Type)
                                 .Return()
                                 .End();
-                            device.Output(signal.Signal.Wave, trigger.Wave);
+                            if (signal.Type == SignalType.Ultrasound)
+                            {
+                                var name = (VisaResuorce)Configure.ResourceComboBox.SelectedItem;
+                                Fungene.Open(name.Resource);
+                                Fungene.Oscillation("TRIGGER");
+                                Fungene.BurstSyncType("BURSTSYNC");
+                                Fungene.OnOff("ON");
+                                Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
+                                await Task.Delay(TimeSpan.FromMilliseconds(50), Cancellation.Token);
+                                device.Output(nonuse.Wave, trigger.Wave, signal.Signal.Wave);
+                            }
+                            else
+                            {
+                                device.Output(signal.Signal.Wave, trigger.Wave, nonuse.Wave);
+                            }
+                            
                             await Task.Delay(Interval.Interval, Cancellation.Token);
                         }
                         Progress.Value = i + 1;
@@ -225,6 +248,11 @@ namespace Vocal
                                 var signal = variable.Signal as AmplitudeModulationWave;
                                 return new { name = variable.Name, duration = signal.Duration, decibel = signal.Decibel, frequency = signal.Frequency, type = variable.Type.ToString(), modulation = signal.Modulation };
                             }
+                            else if (variable.Type == SignalType.Ultrasound)
+                            {
+                                var signal = variable.Signal as UltrasoundWave;
+                                return new { name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Wave, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
+                            }
                             else
                             {
                                 throw new ArgumentException("this type is invalid.");
@@ -251,6 +279,7 @@ namespace Vocal
             Cancellation.Cancel();
             SetBuzy();
         }
+
 
     }
 }

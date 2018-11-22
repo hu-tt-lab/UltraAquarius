@@ -23,6 +23,7 @@ namespace Vocal
         Pure,
         Click,
         Modulation,
+        Ultrasound,
         User
     }
 

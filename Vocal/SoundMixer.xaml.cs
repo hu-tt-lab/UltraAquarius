@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace Vocal
 {
     /// <summary>
@@ -31,6 +32,7 @@ namespace Vocal
             PureTone.Lock();
             ClickTone.Lock();
             ModulationTone.Lock();
+            Ultrasound.Lock();
             UserDefined.Lock();
         }
 
@@ -39,6 +41,7 @@ namespace Vocal
             PureTone.Unlock();
             ClickTone.Unlock();
             ModulationTone.Unlock();
+            Ultrasound.Unlock();
             UserDefined.Unlock();
         }
 
@@ -51,24 +54,29 @@ namespace Vocal
                 switch (x.Tone)
                 {
                     case PureToneType.PureTone:
-                        return new PureWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
+                        return new PureWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration / 1000);
                     case PureToneType.ToneBurst:
-                        return new BurstWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
+                        return new BurstWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration / 1000);
                     case PureToneType.TonePip:
-                        return new PipWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration/1000);
+                        return new PipWave(x.Frequency, amplitude, x.Decibel, SamplingRate, x.Duration / 1000);
                 }
             }
             else if (type == SignalType.Click)
             {
                 var x = ClickTone.Find(name);
                 var amplitude = ClickTone.Correction(x.Decibel);
-                return new ClickWave(amplitude, x.Decibel, SamplingRate, x.Duration/1000);
+                return new ClickWave(amplitude, x.Decibel, SamplingRate, x.Duration / 1000);
             }
             else if (type == SignalType.Modulation)
             {
                 var x = ModulationTone.Find(name);
                 var amplitude = ModulationTone.Correction(x.Frequency, x.Decibel);
                 return new AmplitudeModulationWave(x.Frequency, amplitude, x.Modulation, x.Decibel, SamplingRate, x.Duration / 1000);
+            }
+            else if (type == SignalType.Ultrasound)
+            {
+                var x = Ultrasound.Find(name);
+                return new UltrasoundWave(x.Waveform, x.Frequency, x.Voltage, x.Waves, x.Duty, x.PRF, x.Pulses, SamplingRate, x.Pulses / x.PRF);
             }
             else if (type == SignalType.User)
             {

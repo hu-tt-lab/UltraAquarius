@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Vocal
 {
+    
 
     /// <summary>
     /// sound wave generator
@@ -208,4 +209,82 @@ namespace Vocal
         }
     }
 
+    /// <summary>
+    /// Ultrasound Trigger wave generator
+    /// </summary>
+    public class UltrasoundWave : SignalWave
+    {
+        public UltrasoundWave(UltrasoundWaveform waveform, double frequency, double voltage, int waves, double duty, double prf, int Pulses, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            Waveform = waveform;
+            Level = 4.5;
+            Frequency = frequency;
+            PRF = prf;
+            Triggered = Pulses;
+            Voltage = voltage;
+            Waves = waves;
+            Duty = duty;
+        }
+
+        public double Level { get; set;}
+       
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i * Frequency / SamplingRate > Triggered)
+                    {
+                        yield return 0;
+                    }
+                    else
+                    {
+                        if (Math.Cos(i * Frequency * 2 * Math.PI / SamplingRate) > Math.Cos(Math.PI / 4))
+                        {
+                            yield return Level;
+                        }
+                        else
+                        {
+                            yield return 0;
+                        }
+                    }
+                    
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Triggered { get; }
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Duty { get; }
+        public double PRF { get; }
+        public UltrasoundWaveform Waveform { get;}
+
+    }
+
+
+
+    /// <summary>
+    /// trigger wave generator
+    /// </summary>
+    public class NonUse : SignalWave
+    {
+        public NonUse(double sampling, double duration): base(sampling, duration, 0) {}
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    yield return 0;
+                }
+
+            }
+        }
+    }
 }
+

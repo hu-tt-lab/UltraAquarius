@@ -42,9 +42,9 @@ namespace Vocal
 
         public void Output(params IEnumerable<double>[] waves)
         {
-            for(var u = 0; u < data_.Rank; ++u)
+            for(var u = 0; u < data_.GetLength(0); ++u)
             {
-                for(var v = 0; v < data_.Length / data_.Rank; ++v)
+                for(var v = 0; v < data_.GetLength(1); ++v)
                 {
                     data_[u, v] = 0;
                 }

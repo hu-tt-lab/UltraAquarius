@@ -23,6 +23,11 @@
                     <local:AmToneMixer  x:Name="ModulationTone" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Ultrasound">
+                <Grid Background="#FFE5E5E5">
+                    <local:UltrasoundMixer  x:Name="Ultrasound" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="User Defined Tone">
                 <Grid Background="#FFE5E5E5">
                     <local:UserSoundMixer x:Name="UserDefined" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="471" />
