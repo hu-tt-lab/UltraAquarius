@@ -241,7 +241,7 @@ namespace Vocal
                     }
                     else
                     {
-                        if (Math.Cos(i * Frequency * 2 * Math.PI / SamplingRate) > Math.Cos(Math.PI / 4))
+                        if (Math.Cos(i * Frequency * 2 * Math.PI / SamplingRate - Math.PI / 4) > Math.Cos(Math.PI / 4))
                         {
                             yield return Level;
                         }

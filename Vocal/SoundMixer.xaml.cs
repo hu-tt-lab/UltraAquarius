@@ -76,7 +76,7 @@ namespace Vocal
             else if (type == SignalType.Ultrasound)
             {
                 var x = Ultrasound.Find(name);
-                return new UltrasoundWave(x.Waveform, x.Frequency, x.Voltage, x.Waves, x.Duty, x.PRF, x.Pulses, SamplingRate, x.Pulses / x.PRF);
+                return new UltrasoundWave(x.Waveform, x.Frequency, x.Voltage, x.Waves, x.Duty, x.PRF, x.Pulses, SamplingRate, (x.Pulses / x.PRF));
             }
             else if (type == SignalType.User)
             {
