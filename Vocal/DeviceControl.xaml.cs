@@ -20,7 +20,7 @@ namespace Vocal
             SoundChannelBox.ItemsSource = Channels;
             TriggerChannelBox.ItemsSource = Channels;
             FunGeneChannelBox.ItemsSource = Channels;
-
+            FunGeneTriggerChannelBox.ItemsSource = Channels;
 
         }
 
@@ -59,7 +59,13 @@ namespace Vocal
                 return string.Format("{0:g}/{1:g}", Identifer, TriggerChannelBox.SelectedValue.ToString());
             }
         }
-
+        public string FunGeneTriggerChannel
+        {
+            get
+            {
+                return string.Format("{0:g}/{1:g}", Identifer, FunGeneTriggerChannelBox.SelectedValue.ToString());
+            }
+        }
         public string FunGeneChannel
         {
             get
@@ -68,7 +74,7 @@ namespace Vocal
             }
         }
 
-        public ObservableCollection<string> Channels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2"};
+        public ObservableCollection<string> Channels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2", "ao3"};
 
         private void OnGetResourseClick(object sender, System.Windows.RoutedEventArgs e)
         {

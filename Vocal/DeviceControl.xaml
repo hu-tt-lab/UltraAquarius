@@ -13,14 +13,14 @@
         <Label Content="SamplingRate [Hz]" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="SamplingRateBox" HorizontalAlignment="Left" Height="23" Margin="10,63,0,0" TextWrapping="Wrap" Text="100000" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Sound Channel" HorizontalAlignment="Left" Margin="200,-4,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="SoundChannelBox" HorizontalAlignment="Left" Height="23" Margin="200,19,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
+        <Label Content="Sound Channel" HorizontalAlignment="Left" Margin="143,-4,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="SoundChannelBox" HorizontalAlignment="Left" Height="23" Margin="143,19,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="0"/>
 
-        <Label Content="Trigger Channel" HorizontalAlignment="Left" Margin="200,40,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="TriggerChannelBox" HorizontalAlignment="Left" Height="23" Margin="200,63,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="1"/>
+        <Label Content="Trigger Channel" HorizontalAlignment="Left" Margin="246,-4,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="TriggerChannelBox" HorizontalAlignment="Left" Height="23" Margin="246,19,0,0" VerticalAlignment="Top" Width="93" SelectedIndex="1"/>
 
-        <Label Content="FunGene Channel" HorizontalAlignment="Left" Margin="200,84,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="FunGeneChannelBox" HorizontalAlignment="Left" Height="23"  Margin="200,106,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="2"/>
+        <Label Content="FunGene Channel" HorizontalAlignment="Left" Margin="143,40,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="FunGeneChannelBox" HorizontalAlignment="Left" Height="23"  Margin="143,63,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="2"/>
 
         <Button Margin="10,139,0,0" Content="Get FunGene ID" Click="OnGetResourseClick" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" />
         <ComboBox Name="ResourceComboBox" FontSize="14" Height="23" Margin="108,139,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="212" SelectionChanged="ResourceSelectionChanged">
@@ -34,5 +34,7 @@
         </ComboBox>
         <Label Content="FunGene ID" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
         <TextBlock x:Name="FunGeneIDBox" HorizontalAlignment="Left" Height="20" Margin="10,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label Content="FG Trigger Channel" HorizontalAlignment="Left" Margin="246,40,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="FunGeneTriggerChannelBox" HorizontalAlignment="Left" Height="23"  Margin="246,63,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="2"/>
     </Grid>
 </UserControl>
