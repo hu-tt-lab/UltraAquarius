@@ -35,6 +35,6 @@
         <Label Content="FunGene ID" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
         <TextBlock x:Name="FunGeneIDBox" HorizontalAlignment="Left" Height="20" Margin="10,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label Content="FG Trigger Channel" HorizontalAlignment="Left" Margin="246,40,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="FunGeneTriggerChannelBox" HorizontalAlignment="Left" Height="23"  Margin="246,63,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="2"/>
+        <ComboBox x:Name="FunGeneTriggerChannelBox" HorizontalAlignment="Left" Height="23"  Margin="246,63,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="3"/>
     </Grid>
 </UserControl>
