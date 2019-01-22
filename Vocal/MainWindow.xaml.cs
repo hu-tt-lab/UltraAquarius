@@ -249,7 +249,7 @@ namespace Vocal
                             else if (variable.Type == SignalType.Ultrasound)
                             {
                                 var signal = variable.Signal as UltrasoundWave;
-                                return new { name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Wave, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
+                                return new { name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
                             }
                             else
                             {
