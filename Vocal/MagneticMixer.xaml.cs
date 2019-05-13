@@ -23,13 +23,14 @@ namespace Vocal
 
         public enum MagneticWaveform
         {
-            Sow,
-            Square
+            Saw,
+            Square,
+            Triangle
         }
 
         public class Magnetic
     {
-            public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Sow;
+            public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Saw;
             public double Voltage { get; set; } = 0.5;
             public double Frequency { get; set; } = 500000;
             public int Waves { get; set; } = 80;
@@ -45,7 +46,7 @@ namespace Vocal
             public class Variable
             {
                 public string Name { get; set; }
-                public Ultrasound Signal { get; set; }
+                public Magnetic Signal { get; set; }
             }
 
             public MagneticMixer()
@@ -77,7 +78,7 @@ namespace Vocal
             {
                 var values = Rows.Where(x => Regex.IsMatch(x.Name, @"\d+")).ToList();
                 var id = values.Count != 0 ? values.Select(x => int.Parse(Regex.Match(x.Name, @"\d+").Value)).Max() + 1 : 0;
-                Rows.Add(new Variable { Name = string.Format("mg{0:d}", id), Signal = new Ultrasound() });
+                Rows.Add(new Variable { Name = string.Format("mg{0:d}", id), Signal = new Magnetic() });
             }
 
             private void OnAdd(object sender, RoutedEventArgs e)
@@ -111,7 +112,7 @@ namespace Vocal
                 return Key;
             }
 
-            public Ultrasound Find(string key)
+            public Magnetic Find(string key)
             {
                 if (!IsLocked()) throw new Exception("Table must be Locked.");
                 var variables = Rows.Where(x => x.Name == key).ToList();
