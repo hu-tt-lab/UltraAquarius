@@ -145,7 +145,7 @@ namespace Vocal
                     .WriteLine("Trigger Level: {0:f1} Function Generator Trigger Level: {1:f1}", TriggerLevel, FunGeneTriggerLevel)
                     .Return()
                     .End();
-                var name = (VisaResuorce)Configure.ResourceComboBox.SelectedItem;
+                var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
                 Fungene.Open(name.Resource);
                 Fungene.Oscillation("TRIGGER");
                 Fungene.BurstSyncType("BURSTSYNC");

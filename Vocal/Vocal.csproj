@@ -86,6 +86,9 @@
     </Compile>
     <Compile Include="DynamicJson.cs" />
     <Compile Include="FunGene.cs" />
+    <Compile Include="FunGeneControl.xaml.cs">
+      <DependentUpon>FunGeneControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IntervalControl.xaml.cs">
       <DependentUpon>IntervalControl.xaml</DependentUpon>
     </Compile>
@@ -120,6 +123,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DAQControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FunGeneControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

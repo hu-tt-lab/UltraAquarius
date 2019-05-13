@@ -24,8 +24,6 @@ namespace Vocal
 
         }
 
-        ResourceManager RM = new ResourceManager();
-        public FunGene Fungene = new FunGene();
 
         public string Identifer
         {
@@ -74,33 +72,7 @@ namespace Vocal
             }
         }
 
-        public ObservableCollection<string> Channels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2", "ao3"};
-
-        private void OnGetResourseClick(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var resources = Fungene.GetResourse();
-            ResourceComboBox.ItemsSource = Enumerable.Range(0, resources.GetLength(0))
-            .Select(i => new VisaResuorce { Resource = resources[i] })
-            .ToList();
-        }
-
-        private void ResourceSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                var name = (VisaResuorce)ResourceComboBox.SelectedItem;
-                FunGeneIDBox.Text = Fungene.Open(name.Resource);
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.Message);
-            }
-            
-        }
-        
+        public ObservableCollection<string> Channels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2", "ao3" };
     }
-    public class VisaResuorce
-    {
-        public string Resource { get; set; }
-    }
+       
 }
