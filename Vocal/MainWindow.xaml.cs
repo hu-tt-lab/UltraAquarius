@@ -260,17 +260,17 @@ namespace Vocal
                                 var saw = variable.Signal as SawWave;
                                 if (saw != null)
                                 {
-                                    return new { name = variable.Name, voltage = saw.Voltage, frequency = saw.Frequency, waves = saw.Waves, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, voltage = saw.Voltage, frequency = saw.Frequency, waves = saw.Waves, type = variable.Type.ToString(), signaltype = "saw" };
                                 }
                                 var square = variable.Signal as SquareWave;
                                 if (square != null)
                                 {
-                                    return new { name = variable.Name, voltage = square.Voltage, frequency = square.Frequency, waves = square.Waves, duty = square.Duty, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, voltage = square.Voltage, frequency = square.Frequency, waves = square.Waves, duty = square.Duty, type = variable.Type.ToString(), signaltype = "square"};
                                 }
                                 var triangle = variable.Signal as TriangleWave;
                                 if (triangle != null)
                                 {
-                                    return new { name = variable.Name, voltage = triangle.Voltage, frequency = triangle.Frequency, waves = triangle.Waves, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, voltage = triangle.Voltage, frequency = triangle.Frequency, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "triangle"};
                                 }
                                 else
                                 {
