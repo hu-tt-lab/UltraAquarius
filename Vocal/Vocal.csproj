@@ -92,6 +92,9 @@
     <Compile Include="IntervalControl.xaml.cs">
       <DependentUpon>IntervalControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MagneticMixer.xaml.cs">
+      <DependentUpon>MagneticMixer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OutputList.xaml.cs">
       <DependentUpon>OutputList.xaml</DependentUpon>
     </Compile>
@@ -131,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="IntervalControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MagneticMixer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
