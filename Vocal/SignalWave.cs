@@ -296,7 +296,7 @@ namespace Vocal
 
     public class SquareWave : SignalWave
     {
-        public SquareWave(double frequency, double voltage, int waves, double sampling, double duration, double duty)
+        public SquareWave(double frequency, double voltage, int waves, double duty, double sampling, double duration)
     : base(sampling, duration, 0)
         {
             Frequency = frequency;
