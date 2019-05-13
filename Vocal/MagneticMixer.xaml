@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ObjectDataProvider x:Key="Waveform" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="local:UltrasoundWaveform"/>
+                <x:Type Type="local:MagneticWaveform"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
