@@ -198,6 +198,10 @@ namespace Vocal
                                 Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
                                 device.Output(nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
                             }
+                            else if(signal.Type == SignalType.Magnetic)
+                            {
+                                device.Output(nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                            }
                             else
                             {
                                 device.Output(signal.Signal.Wave, trigger.Wave, nonuse.Wave, nonuse.Wave);
@@ -250,6 +254,28 @@ namespace Vocal
                             {
                                 var signal = variable.Signal as UltrasoundWave;
                                 return new { name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
+                            }
+                            else if (variable.Type == SignalType.Magnetic)
+                            {
+                                var saw = variable.Signal as SawWave;
+                                if (saw != null)
+                                {
+                                    return new { name = variable.Name, voltage = saw.Voltage, frequency = saw.Frequency, waves = saw.Waves, type = variable.Type.ToString(), signaltype = "saw" };
+                                }
+                                var square = variable.Signal as SquareWave;
+                                if (square != null)
+                                {
+                                    return new { name = variable.Name, voltage = square.Voltage, frequency = square.Frequency, waves = square.Waves, duty = square.Duty, type = variable.Type.ToString(), signaltype = "square"};
+                                }
+                                var triangle = variable.Signal as TriangleWave;
+                                if (triangle != null)
+                                {
+                                    return new { name = variable.Name, voltage = triangle.Voltage, frequency = triangle.Frequency, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "triangle"};
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("this param is invalid.");
+                                }
                             }
                             else
                             {

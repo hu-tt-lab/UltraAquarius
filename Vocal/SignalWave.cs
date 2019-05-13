@@ -264,9 +264,94 @@ namespace Vocal
         public UltrasoundWaveform Waveform { get;}
 
     }
+    public class SawWave : SignalWave
+    {
+        public SawWave(double frequency, double voltage, int waves, double sampling, double duration)
+    : base(sampling, duration, 0)
+        {
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+        }
 
+        public double Level { get; set; }
 
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    var x = i / SamplingRate * Frequency;
+                    yield return Voltage * (x - Math.Floor(x + 0.5)) - Voltage/2;
+                }
+            }
+        }
 
+        public double Frequency { get; }
+        public double Voltage { get; }
+        public double Waves { get; }
+
+    }
+
+    public class SquareWave : SignalWave
+    {
+        public SquareWave(double frequency, double voltage, int waves, double duty, double sampling, double duration)
+    : base(sampling, duration, 0)
+        {
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            Duty = duty;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    var x = i / SamplingRate * Frequency;
+                    yield return (Voltage * (x - Math.Floor(x + 0.5)) - Voltage / 2) - (Voltage * (x - Duty/100 - Math.Floor(x + 0.5 - Duty/100)) - Voltage / 2);
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Duty { get; }
+    }
+    public class TriangleWave : SignalWave
+    {
+        public TriangleWave(double frequency, double voltage, int waves, double sampling, double duration)
+    : base(sampling, duration, 0)
+        {
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    var x = i / SamplingRate * Frequency;
+                    yield return (2 * Voltage * Math.Abs(Math.Round(x - 0.25) - (x -0.25)) - Voltage / 2);
+                }
+            }
+        }
+
+        public double Frequency { get; }
+        public double Voltage { get; }
+        public double Waves { get; }
+    }
     /// <summary>
     /// trigger wave generator
     /// </summary>

@@ -78,6 +78,20 @@ namespace Vocal
                 var x = Ultrasound.Find(name);
                 return new UltrasoundWave(x.Waveform, x.Frequency, x.Voltage, x.Waves, x.Duty, x.PRF, x.Pulses, SamplingRate, (x.Pulses / x.PRF));
             }
+            else if (type == SignalType.Magnetic)
+            {
+                var x = Magnetic.Find(name);
+                switch (x.Waveform)
+                {
+                    case MagneticWaveform.Saw:
+                        return new SawWave(x.Frequency, x.Voltage, x.Waves, SamplingRate, (x.Waves /x.Frequency));
+                    case MagneticWaveform.Square:
+                        return new SquareWave(x.Frequency, x.Voltage, x.Waves, x.Duty, SamplingRate, (x.Waves / x.Frequency));
+                    case MagneticWaveform.Triangle:
+                        return new TriangleWave(x.Frequency, x.Voltage, x.Waves, SamplingRate, (x.Waves / x.Frequency));
+                }
+
+            }
             else if (type == SignalType.User)
             {
                 var x = UserDefined.Find(name);
