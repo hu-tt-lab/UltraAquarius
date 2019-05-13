@@ -19,8 +19,8 @@ namespace Vocal
             InitializeComponent();
             SoundChannelBox.ItemsSource = Channels;
             TriggerChannelBox.ItemsSource = Channels;
-            FunGeneChannelBox.ItemsSource = Channels;
-            FunGeneTriggerChannelBox.ItemsSource = Channels;
+            ExDeviceChannelBox.ItemsSource = Channels;
+            ExDeviceTriggerChannelBox.ItemsSource = Channels;
 
         }
 
@@ -57,18 +57,18 @@ namespace Vocal
                 return string.Format("{0:g}/{1:g}", Identifer, TriggerChannelBox.SelectedValue.ToString());
             }
         }
-        public string FunGeneTriggerChannel
+        public string ExDeviceTriggerChannel
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, FunGeneTriggerChannelBox.SelectedValue.ToString());
+                return string.Format("{0:g}/{1:g}", Identifer, ExDeviceTriggerChannelBox.SelectedValue.ToString());
             }
         }
-        public string FunGeneChannel
+        public string ExDeviceChannel
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, FunGeneChannelBox.SelectedValue.ToString());
+                return string.Format("{0:g}/{1:g}", Identifer, ExDeviceChannelBox.SelectedValue.ToString());
             }
         }
 

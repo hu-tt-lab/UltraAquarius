@@ -141,7 +141,7 @@ namespace Vocal
 
                 Console.WriteLine("Start to output")
                     .WriteLine("Device number: {0:g}", Configure.Identifer)
-                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}, FunGene = {2:g} FunGeneTrigger = {3:g}", Configure.SoundChannel, Configure.TriggerChannel, Configure.FunGeneChannel, Configure.FunGeneTriggerChannel)
+                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}, FunGene = {2:g} FunGeneTrigger = {3:g}", Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ExDeviceTriggerChannel)
                     .WriteLine("Trigger Level: {0:f1} Function Generator Trigger Level: {1:f1}", TriggerLevel, FunGeneTriggerLevel)
                     .Return()
                     .End();
@@ -156,7 +156,7 @@ namespace Vocal
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
 
                 // create device buffer
-                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel, Configure.FunGeneChannel, Configure.FunGeneTriggerChannel))
+                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ExDeviceTriggerChannel))
                 {
                     var table = new List<int>[trial];
                     if (Random.SelectedIndex == 1)
