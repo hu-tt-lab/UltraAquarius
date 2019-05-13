@@ -224,17 +224,17 @@ namespace Vocal
                                 var pure = variable.Signal as PureWave;
                                 if (pure != null)
                                 {
-                                    return new { name = variable.Name, duration = pure.Duration, decibel = pure.Decibel, frequency = pure.Frequency, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, duration = pure.Duration, decibel = pure.Decibel, frequency = pure.Frequency, type = variable.Type.ToString(), tonetype = "PureTone" };
                                 }
                                 var pip = variable.Signal as PipWave;
                                 if (pip != null)
                                 {
-                                    return new { name = variable.Name, duration = pip.Duration, decibel = pip.Decibel, frequency = pip.Frequency, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, duration = pip.Duration, decibel = pip.Decibel, frequency = pip.Frequency, type = variable.Type.ToString(), tonetype = "TonePip" };
                                 }
                                 var burst = variable.Signal as BurstWave;
                                 if (burst != null)
                                 {
-                                    return new { name = variable.Name, duration = burst.Duration, decibel = burst.Decibel, frequency = burst.Frequency, type = variable.Type.ToString() };
+                                    return new { name = variable.Name, duration = burst.Duration, decibel = burst.Decibel, frequency = burst.Frequency, type = variable.Type.ToString(), tonetype = "ToneBurst" };
                                 }
                                 else
                                 {
