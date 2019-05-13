@@ -12,9 +12,9 @@ namespace Vocal
     /// <summary>
     /// DeviceControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class DeviceControl : UserControl
+    public partial class DAQControl : UserControl
     {
-        public DeviceControl()
+        public DAQControl()
         {
             InitializeComponent();
             SoundChannelBox.ItemsSource = Channels;

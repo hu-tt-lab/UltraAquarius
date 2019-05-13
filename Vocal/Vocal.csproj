@@ -81,8 +81,8 @@
     <Compile Include="ClickSoundMixer.xaml.cs">
       <DependentUpon>ClickSoundMixer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DeviceControl.xaml.cs">
-      <DependentUpon>DeviceControl.xaml</DependentUpon>
+    <Compile Include="DAQControl.xaml.cs">
+      <DependentUpon>DAQControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DynamicJson.cs" />
     <Compile Include="FunGene.cs" />
@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeviceControl.xaml">
+    <Page Include="DAQControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

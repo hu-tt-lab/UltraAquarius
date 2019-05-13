@@ -43,9 +43,9 @@
                     <TextBox x:Name="fungenetriggerVoltage" HorizontalAlignment="Left" Height="23" Margin="10,86,0,0" TextWrapping="Wrap" Text="4.5" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Device">
+            <TabItem Header="DAQ">
                 <Grid Background="#FFE5E5E5">
-                    <local:DeviceControl x:Name="Configure" DataContext="Device"/>
+                    <local:DAQControl x:Name="Configure" DataContext="Device"/>
                 </Grid>
             </TabItem>
         </TabControl>
