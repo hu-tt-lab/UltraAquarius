@@ -145,15 +145,19 @@ namespace Vocal
                     .WriteLine("Trigger Level: {0:f1} Function Generator Trigger Level: {1:f1}", TriggerLevel, FunGeneTriggerLevel)
                     .Return()
                     .End();
-                var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
-                Fungene.Open(name.Resource);
-                Fungene.Oscillation("TRIGGER");
-                Fungene.BurstSyncType("BURSTSYNC");
-                Fungene.OnOff("ON");
+
                 var signals = Output.List.Select(x => (Name: x.Name, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
                 var duration = signals.Max(x => x.Signal.Duration);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
+                if (signals.Any(x =>x.Type == SignalType.Ultrasound))
+                {
+                    var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                    Fungene.Open(name.Resource);
+                    Fungene.Oscillation("TRIGGER");
+                    Fungene.BurstSyncType("BURSTSYNC");
+                    Fungene.OnOff("ON");
+                }
 
                 // create device buffer
                 using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ExDeviceTriggerChannel))
