@@ -283,7 +283,7 @@ namespace Vocal
                 for (var i = 0; i < Size; ++i)
                 {
                     var x = i / SamplingRate * Frequency;
-                    yield return Voltage * (x - Math.Floor(x + 0.5)) - Voltage/2;
+                    yield return Voltage * (x - Math.Floor(x + 0.5));
                 }
             }
         }
