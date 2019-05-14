@@ -33,6 +33,7 @@ namespace Vocal
             ClickTone.Lock();
             ModulationTone.Lock();
             Ultrasound.Lock();
+            Magnetic.Lock();
             UserDefined.Lock();
         }
 
@@ -42,6 +43,7 @@ namespace Vocal
             ClickTone.Unlock();
             ModulationTone.Unlock();
             Ultrasound.Unlock();
+            Magnetic.Unlock();
             UserDefined.Unlock();
         }
 
