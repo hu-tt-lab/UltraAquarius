@@ -24,9 +24,17 @@ NIDAQから音作成・US波形・磁気刺激波形を作るアプリケーシ�
 
 ### 磁気刺激波形
 
-* Saw
-* Square
-* Triangle
+* FrontEdgeSawPulse：波形の前がEdgeのSawWave
+* LastEdgeSawPulse：波形の後がEdgeのSawWave
+* SquarePulse：矩形波
+* TrianglePulse：三角波
+
+#### パラメータ
+
+* Duration：波形の長さ
+* Interval：波形と波形の間の時間
+* Waves：波形を何個出力するか
+
 
 ## 必須環境
 
