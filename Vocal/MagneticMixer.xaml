@@ -21,9 +21,9 @@
                 <DataGridTextColumn Header="Sig Name" Binding="{Binding Name}"/>
                 <DataGridComboBoxColumn Header="Waveform" SelectedItemBinding="{Binding Signal.Waveform}" ItemsSource="{Binding Source={StaticResource Waveform}}"/>
                 <DataGridTextColumn Header="Voltage[V]" Binding="{Binding Signal.Voltage}"/>
-                <DataGridTextColumn Header="Frequency[Hz]" Binding="{Binding Signal.Frequency}"/>
+                <DataGridTextColumn Header="Duration[us]" Binding="{Binding Signal.Duration}"/>
+                <DataGridTextColumn Header="Interval[us]" Binding="{Binding Signal.Interval}"/>
                 <DataGridTextColumn Header="Waves" Binding="{Binding Signal.Waves}"/>
-                <DataGridTextColumn Header="Duty" Binding="{Binding Signal.Duty}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="add" HorizontalAlignment="Left" Margin="10,445,0,0" VerticalAlignment="Top" Width="75" Click="OnAdd"/>
