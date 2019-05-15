@@ -324,6 +324,7 @@ namespace Vocal
         public double Waves { get; }
         public double Duty { get; }
     }
+    
     public class TriangleWave : SignalWave
     {
         public TriangleWave(double frequency, double voltage, int waves, double sampling, double duration)
@@ -352,6 +353,157 @@ namespace Vocal
         public double Voltage { get; }
         public double Waves { get; }
     }
+
+    public class SquarePulse : SignalWave
+    {
+        public SquarePulse(double voltage, int waves, double interval, double sampling, double duration)
+    : base(sampling, (interval + duration) * waves, 0)
+        {
+            Voltage = voltage;
+            Waves = waves;
+            Interval = interval;
+        }
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var repeat_time = (int)((Duration/Waves) * SamplingRate);
+                var pulse_time = (int)((Duration/Waves - Interval) * SamplingRate);
+
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i % repeat_time <= pulse_time)
+                    {
+                        yield return Voltage;
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }
+                }
+            }
+        }
+
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Interval { get; }
+    }
+
+    public class FrontEdgeSawPulse : SignalWave
+    {
+        public FrontEdgeSawPulse(double voltage, int waves, double interval, double sampling, double duration)
+    : base(sampling, (interval + duration) * waves, 0)
+        {
+            Voltage = voltage;
+            Waves = waves;
+            Interval = interval;
+        }
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var repeat_time = (int)((Duration / Waves) * SamplingRate);
+                var pulse_time = (int)((Duration / Waves - Interval) * SamplingRate);
+
+                for (var i = 0; i < Size; ++i)
+                {
+                    var period = i % repeat_time;
+                    if (period <= pulse_time)
+                    {
+                        yield return Voltage*(1- ((double)period /pulse_time));
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }
+                }
+            }
+        }
+
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Interval { get; }
+    }
+
+    public class LastEdgeSawPulse : SignalWave
+    {
+        public LastEdgeSawPulse(double voltage, int waves, double interval, double sampling, double duration)
+    : base(sampling, (interval + duration) * waves, 0)
+        {
+            Voltage = voltage;
+            Waves = waves;
+            Interval = interval;
+        }
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var repeat_time = (int)((Duration / Waves) * SamplingRate);
+                var pulse_time = (int)((Duration / Waves - Interval) * SamplingRate);
+
+                for (var i = 0; i < Size; ++i)
+                {
+                    var period = i % repeat_time;
+                    if (period <= pulse_time)
+                    {
+                        yield return Voltage * ((double)period / pulse_time);
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }
+                }
+            }
+        }
+
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Interval { get; }
+    }
+
+    public class TrianglePulse : SignalWave
+    {
+        public TrianglePulse(double voltage, int waves, double interval, double sampling, double duration)
+    : base(sampling, (interval + duration) * waves, 0)
+        {
+            Voltage = voltage;
+            Waves = waves;
+            Interval = interval;
+        }
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var repeat_time = (int)((Duration / Waves) * SamplingRate);
+                var pulse_time = (int)((Duration / Waves - Interval) * SamplingRate);
+
+                for (var i = 0; i < Size; ++i)
+                {
+                    var period = i % repeat_time;
+                    if (period <= pulse_time)
+                    {
+                        if (period < 0.5 * pulse_time)
+                        {
+                            yield return Voltage * (period / (0.5 * pulse_time));
+                        }
+                        else
+                        {
+                            yield return Voltage * ( 2 - period / (0.5 * pulse_time));
+                        }
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }
+                }
+            }
+        }
+
+        public double Voltage { get; }
+        public double Waves { get; }
+        public double Interval { get; }
+    }
+
     /// <summary>
     /// trigger wave generator
     /// </summary>

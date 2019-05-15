@@ -261,20 +261,25 @@ namespace Vocal
                             }
                             else if (variable.Type == SignalType.Magnetic)
                             {
-                                var saw = variable.Signal as SawWave;
-                                if (saw != null)
+                                var frontsaw = variable.Signal as FrontEdgeSawPulse;
+                                if (frontsaw != null)
                                 {
-                                    return new { name = variable.Name, voltage = saw.Voltage, frequency = saw.Frequency, waves = saw.Waves, type = variable.Type.ToString(), signaltype = "saw" };
+                                    return new { name = variable.Name, voltage = frontsaw.Voltage, duration = (frontsaw.Duration/ frontsaw.Waves - frontsaw.Interval), interval = frontsaw.Interval, waves = frontsaw.Waves, type = variable.Type.ToString(), signaltype = "FrontEdgeSawPulse" };
                                 }
-                                var square = variable.Signal as SquareWave;
+                                var lastsaw = variable.Signal as LastEdgeSawPulse;
+                                if (lastsaw != null)
+                                {
+                                    return new { name = variable.Name, voltage = lastsaw.Voltage, duration = (lastsaw.Duration / lastsaw.Waves - lastsaw.Interval), interval = lastsaw.Interval, waves = lastsaw.Waves, type = variable.Type.ToString(), signaltype = "LastEdgeSawPulse" };
+                                }
+                                var square = variable.Signal as SquarePulse;
                                 if (square != null)
                                 {
-                                    return new { name = variable.Name, voltage = square.Voltage, frequency = square.Frequency, waves = square.Waves, duty = square.Duty, type = variable.Type.ToString(), signaltype = "square"};
+                                    return new { name = variable.Name, voltage = square.Voltage, duration = (square.Duration / square.Waves - square.Interval), interval = square.Interval, waves = square.Waves, type = variable.Type.ToString(), signaltype = "SquarePulse" };
                                 }
-                                var triangle = variable.Signal as TriangleWave;
+                                var triangle = variable.Signal as TrianglePulse;
                                 if (triangle != null)
                                 {
-                                    return new { name = variable.Name, voltage = triangle.Voltage, frequency = triangle.Frequency, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "triangle"};
+                                    return new { name = variable.Name, voltage = triangle.Voltage, duration = (triangle.Duration / triangle.Waves - triangle.Interval), interval = triangle.Interval, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "TrianglePulse" };
                                 }
                                 else
                                 {

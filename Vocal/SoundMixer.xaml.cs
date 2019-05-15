@@ -85,14 +85,15 @@ namespace Vocal
                 var x = Magnetic.Find(name);
                 switch (x.Waveform)
                 {
-                    case MagneticWaveform.Saw:
-                        return new SawWave(x.Frequency, x.Voltage, x.Waves, SamplingRate, (x.Waves /x.Frequency));
-                    case MagneticWaveform.Square:
-                        return new SquareWave(x.Frequency, x.Voltage, x.Waves, x.Duty, SamplingRate, (x.Waves / x.Frequency));
-                    case MagneticWaveform.Triangle:
-                        return new TriangleWave(x.Frequency, x.Voltage, x.Waves, SamplingRate, (x.Waves / x.Frequency));
+                    case MagneticWaveform.FrontEdgeSawPulse:
+                        return new FrontEdgeSawPulse(x.Voltage, x.Waves, x.Interval/1000000, SamplingRate, x.Duration / 1000000);
+                    case MagneticWaveform.LastEdgeSawPulse:
+                        return new LastEdgeSawPulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                    case MagneticWaveform.SquarePulse:
+                        return new SquarePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                    case MagneticWaveform.TrianglePulse:
+                        return new TrianglePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
                 }
-
             }
             else if (type == SignalType.User)
             {
