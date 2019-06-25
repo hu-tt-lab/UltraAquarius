@@ -204,6 +204,7 @@ namespace Vocal
                             }
                             else if(signal.Type == SignalType.Magnetic)
                             {
+                                Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
                                 device.Output(nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
                             }
                             else
@@ -261,6 +262,12 @@ namespace Vocal
                             }
                             else if (variable.Type == SignalType.Magnetic)
                             {
+                                var magpulse = variable.Signal as MagneticWave;
+                                if (magpulse != null)
+                                {
+                                    return new { name = variable.Name, voltage = magpulse.Voltage, duration = (magpulse.Duration / magpulse.Waves - magpulse.Interval), raisedur = magpulse.RaiseDuration, falldur = magpulse.FallDuration, interval = magpulse.Interval, waves = magpulse.Waves, type = variable.Type.ToString(), signaltype = magpulse.Waveform };
+                                }
+                                /*
                                 var frontsaw = variable.Signal as FrontEdgeSawPulse;
                                 if (frontsaw != null)
                                 {
@@ -281,6 +288,7 @@ namespace Vocal
                                 {
                                     return new { name = variable.Name, voltage = triangle.Voltage, duration = (triangle.Duration / triangle.Waves - triangle.Interval), interval = triangle.Interval, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "TrianglePulse" };
                                 }
+                                */
                                 else
                                 {
                                     throw new ArgumentException("this param is invalid.");

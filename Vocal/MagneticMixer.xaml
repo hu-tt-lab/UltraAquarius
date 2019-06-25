@@ -16,14 +16,16 @@
     </UserControl.Resources>
     <Grid>
         <DataGrid x:Name="TableView" HorizontalAlignment="Left" Height="423" VerticalAlignment="Top" Margin="10,10,0,0"
-                 CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}" Width="451">
+                 CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Sig Name" Binding="{Binding Name}"/>
                 <DataGridComboBoxColumn Header="Waveform" SelectedItemBinding="{Binding Signal.Waveform}" ItemsSource="{Binding Source={StaticResource Waveform}}"/>
                 <DataGridTextColumn Header="Voltage[V]" Binding="{Binding Signal.Voltage}"/>
                 <DataGridTextColumn Header="Duration[us]" Binding="{Binding Signal.Duration}"/>
                 <DataGridTextColumn Header="Interval[us]" Binding="{Binding Signal.Interval}"/>
-                <DataGridTextColumn Header="Waves" Binding="{Binding Signal.Waves}"/>
+                <DataGridTextColumn Header="Raise[us]" Binding="{Binding Signal.RaiseDuration}"/>
+                <DataGridTextColumn Header="Fall[us]" Binding="{Binding Signal.FallDuration}"/>
+                <DataGridTextColumn Header="Waves" Binding="{Binding Signal.Waves}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="add" HorizontalAlignment="Left" Margin="10,445,0,0" VerticalAlignment="Top" Width="75" Click="OnAdd"/>

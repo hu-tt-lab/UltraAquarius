@@ -503,7 +503,49 @@ namespace Vocal
         public double Waves { get; }
         public double Interval { get; }
     }
+    public class MagneticWave : SignalWave
+    {
+        public MagneticWave(MagneticWaveform waveform, double voltage, int waves, double raiseDuration, double fallDuration, double interval, double sampling, double duration)
+            : base(sampling, (interval + duration) * waves, 0)
+        {
+            Waveform = waveform;
+            Level = 4.5;
+            RaiseDuration = raiseDuration;
+            FallDuration = fallDuration;
+            Voltage = voltage;
+            Waves = waves;
+            Interval = interval;
+        }
 
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i  < Size / 10)
+                    {
+                        yield return Level;
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }                
+
+                }
+            }
+        }
+
+        public MagneticWaveform Waveform { get;} = MagneticWaveform.Pulse;
+        public double Voltage { get;} = 1;
+        public double RaiseDuration { get;} = 500;
+        public double FallDuration { get;} = 500;
+        public double Interval { get;} = 10;
+        public int Waves { get; } = 1;
+
+    }
     /// <summary>
     /// trigger wave generator
     /// </summary>

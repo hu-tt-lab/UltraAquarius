@@ -83,17 +83,19 @@ namespace Vocal
             else if (type == SignalType.Magnetic)
             {
                 var x = Magnetic.Find(name);
-                switch (x.Waveform)
-                {
-                    case MagneticWaveform.FrontEdgeSawPulse:
-                        return new FrontEdgeSawPulse(x.Voltage, x.Waves, x.Interval/1000000, SamplingRate, x.Duration / 1000000);
-                    case MagneticWaveform.LastEdgeSawPulse:
-                        return new LastEdgeSawPulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
-                    case MagneticWaveform.SquarePulse:
-                        return new SquarePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
-                    case MagneticWaveform.TrianglePulse:
-                        return new TrianglePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
-                }
+                //switch (x.Waveform)
+                //{
+                return new MagneticWave(x.Waveform, x.Voltage, x.Waves, x.RaiseDuration / 1000000, x.FallDuration / 1000000, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                /*case MagneticWaveform.FrontEdgeSawPulse:
+                    return new FrontEdgeSawPulse(x.Voltage, x.Waves, x.Interval/1000000, SamplingRate, x.Duration / 1000000);
+                case MagneticWaveform.LastEdgeSawPulse:
+                    return new LastEdgeSawPulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                case MagneticWaveform.SquarePulse:
+                    return new SquarePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                case MagneticWaveform.TrianglePulse:
+                    return new TrianglePulse(x.Voltage, x.Waves, x.Interval / 1000000, SamplingRate, x.Duration / 1000000);
+                */
+                //}
             }
             else if (type == SignalType.User)
             {

@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Vocal Control" Height="595" Width="1200" ResizeMode="CanMinimize">
     <Grid>
-        <local:OutputList x:Name="Output" Height="540" Width="340" Margin="0,10,854,16" />
-        <local:SoundMixer x:Name="Mixer" Margin="333,13,360,0" Height="540" VerticalAlignment="Top"/>
+        <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,10,894,16" />
+        <local:SoundMixer x:Name="Mixer" Margin="295,13,360,0" Height="540"  Width="540" VerticalAlignment="Top"/>
         <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="825,214,0,0" VerticalAlignment="Top" Width="353">
             <Grid>
                 <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="15" Margin="10,35,0,0" VerticalAlignment="Top" Width="280"/>

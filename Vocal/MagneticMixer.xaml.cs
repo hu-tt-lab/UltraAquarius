@@ -23,18 +23,22 @@ namespace Vocal
 
         public enum MagneticWaveform
         {
-            SquarePulse,
-            FrontEdgeSawPulse,
-            LastEdgeSawPulse,
-            TrianglePulse
+        //SquarePulse,
+        //FrontEdgeSawPulse,
+        //LastEdgeSawPulse,
+        //TrianglePulse,
+            Pulse,
+            Square
         }
 
         public class Magnetic
     {
-            public MagneticWaveform Waveform { get; set; } = MagneticWaveform.SquarePulse;
+            public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Pulse;
             public double Voltage { get; set; } = 1;
             public double Duration { get; set; } = 500;
-            public double Interval { get; set; } = 0;
+            public double RaiseDuration { get; set; } = 50.1;
+            public double FallDuration { get; set; } = 50.1;
+            public double Interval { get; set; } = 10;
             public int Waves { get; set; } = 1;
 
         }

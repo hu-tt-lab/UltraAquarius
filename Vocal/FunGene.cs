@@ -9,6 +9,7 @@ using Codeplex.Data;
 using CsvHelper;
 using CsvHelper.Configuration;
 
+
 namespace Vocal
 {
 
@@ -88,6 +89,9 @@ namespace Vocal
                         }
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                        DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
+                        DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
                         break;
                     case UltrasoundWaveform.Square:
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
@@ -95,6 +99,9 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                        DMM.WriteString(":OUTPut1:POLarity SQUare, NORMal");
+                        DMM.WriteString(":OUTPut1:SCALe SQUare, FS");
                         break;
                     default: throw new InvalidOperationException();
                 }              
@@ -104,8 +111,43 @@ namespace Vocal
                 MessageBox.Show(error.Message);
             }
         }
-        
 
+        public void Parameter(Magnetic parameter)
+        {
+            try
+            {
+                switch (parameter.Waveform)
+                {
+                    case MagneticWaveform.Pulse:
+                        DMM.WriteString(":SOURce1:FUNCtion:SHAPe PULSe");
+                        DMM.WriteString(":SOURce1:PULSe:PERiod " + parameter.Duration + parameter.Interval + "us");
+                        DMM.WriteString(":SOURce1:PULSe:WIDTh " + parameter.Duration + "us");
+                        DMM.WriteString(":SOURce1:PULSe:TRANsition:LEADing " + parameter.RaiseDuration + "us");
+                        DMM.WriteString(":SOURce1:PULSe:TRANsition:TRAiling" + parameter.FallDuration + "us");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                        DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                        DMM.WriteString(":OUTPut1:POLarity PULSe, NORMal");
+                        DMM.WriteString(":OUTPut1:SCALe PULSe, FS");
+                        break;
+                    case MagneticWaveform.Square:
+                        DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
+                        DMM.WriteString(":SOURce1:PULSe:PERiod " + parameter.Duration + parameter.Interval + "us");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                        DMM.WriteString(":SOURce1:FUNCtion:SQUare:DCYCle " + Math.Round(parameter.Duration/(parameter.Duration + parameter.Interval),4) + "PCT");
+                        DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:PHASe:ADJust 179.999DEG");
+                        DMM.WriteString(":OUTPut1:POLarity SQUare, INVerted");
+                        DMM.WriteString(":OUTPut1:SCALe SQUare, PFS");
+                        break;
+                    default: throw new InvalidOperationException();
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
+        }
 
         public string OnOff()
         {

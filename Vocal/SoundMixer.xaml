@@ -30,12 +30,12 @@
             </TabItem>
             <TabItem Header="Magnetic">
                 <Grid Background="#FFE5E5E5">
-                    <local:MagneticMixer  x:Name="Magnetic" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
+                    <local:MagneticMixer  x:Name="Magnetic" HorizontalAlignment="Left" Height="500"  Width="510" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="User Defined">
                 <Grid Background="#FFE5E5E5">
-                    <local:UserSoundMixer x:Name="UserDefined" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="471" />
+                    <local:UserSoundMixer x:Name="UserDefined" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="510" />
                 </Grid>
             </TabItem>
         </TabControl>
