@@ -134,10 +134,14 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
                         DMM.WriteString(":SOURce1:PULSe:PERiod " + parameter.Duration + parameter.Interval + "us");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
-                        DMM.WriteString(":SOURce1:FUNCtion:SQUare:DCYCle " + Math.Round(parameter.Duration/(parameter.Duration + parameter.Interval),4) + "PCT");
+                        DMM.WriteString(":SOURce1:FUNCtion:SQUare:DCYCle " + Math.Round(parameter.Duration/(parameter.Duration + parameter.Interval)*100,4) + "PCT");
+                        DMM.WriteString(":SOURce1:PHASe:ADJust -0.001DEG");
+                        //In relation to the phase
+                        //Duration 510us -> 1us 
+                        //duration 1100us -> 3us
+                        //delay.
+                        DMM.WriteString(":OUTPut1:POLarity SQUare, NOrmal");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
-                        DMM.WriteString(":SOURce1:PHASe:ADJust 179.999DEG");
-                        DMM.WriteString(":OUTPut1:POLarity SQUare, INVerted");
                         DMM.WriteString(":OUTPut1:SCALe SQUare, PFS");
                         break;
                     default: throw new InvalidOperationException();
