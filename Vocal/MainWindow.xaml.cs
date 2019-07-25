@@ -168,8 +168,8 @@ namespace Vocal
                 }
 
                 // create device buffer
-                using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ALLTriggerChannel))
-                {//Digital Trigger, Sound channel, ExDevice channel, All Trigger channel
+                using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ExDeviceChannel2, Configure.ALLTriggerChannel))
+                {//Digital Trigger, Sound channel, ExDevice channel, ExDevice channel2, All Trigger channel
                     var table = new List<int>[trial];
                     if (Random.SelectedIndex == 1)
                     {
@@ -205,20 +205,25 @@ namespace Vocal
                                 .WriteLine("Type: {0:g}", signal.Type)
                                 .Return()
                                 .End();
-                            //Digital Trigger, Sound channel, ExDevice channel, All Trigger channel
+                            //Digital Trigger, Sound channel, ExDevice channel,ExDevice channel2, All Trigger channel
                             if (signal.Type == SignalType.Ultrasound)
                             {
                                 Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                            }
+                            else if (signal.Type == SignalType.USMod)
+                            {
+                                //Fungene.Parameter(Mixer.USMod.Find(signal.Name));
+                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
                             }
                             else if(signal.Type == SignalType.Magnetic)
                             {
                                 Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
                             }
                             else
                             {
-                                device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
                             }
                             
                             await Task.Delay(Interval.Interval, Cancellation.Token);

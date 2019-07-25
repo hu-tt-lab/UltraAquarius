@@ -28,6 +28,11 @@
                     <local:UltrasoundMixer  x:Name="Ultrasound" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="USMod">
+                <Grid Background="#FFE5E5E5">
+                    <local:USModMixer  x:Name="USMod" HorizontalAlignment="Left" Height="500" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Magnetic">
                 <Grid Background="#FFE5E5E5">
                     <local:MagneticMixer  x:Name="Magnetic" HorizontalAlignment="Left" Height="500"  Width="510" VerticalAlignment="Top"/>

@@ -24,6 +24,7 @@ namespace Vocal
         Click,
         Modulation,
         Ultrasound,
+        USMod,
         Magnetic,
         User
     }

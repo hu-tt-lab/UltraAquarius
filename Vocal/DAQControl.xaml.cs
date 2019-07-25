@@ -9,18 +9,20 @@ using System.Windows;
 
 namespace Vocal
 {
+    
     /// <summary>
     /// DeviceControl.xaml の相互作用ロジック
     /// </summary>
     public partial class DAQControl : UserControl
     {
+        
         public DAQControl()
         {
             InitializeComponent();
             SoundChannelBox.ItemsSource = AnalogChannels;
-            TriggerChannelBox.ItemsSource = AnalogChannels;
             TriggerChannelBox.ItemsSource = DigitalChannels;
             ExDeviceChannelBox.ItemsSource = AnalogChannels;
+            ExDeviceChannel2Box.ItemsSource = AnalogChannels;
             ALLTriggerChannelBox.ItemsSource = AnalogChannels;
 
         }
@@ -70,6 +72,13 @@ namespace Vocal
             get
             {
                 return ExDeviceChannelBox.SelectedValue.ToString();
+            }
+        }
+        public string ExDeviceChannel2
+        {
+            get
+            {
+                return ExDeviceChannel2Box.SelectedValue.ToString();
             }
         }
 

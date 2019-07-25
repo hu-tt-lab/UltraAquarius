@@ -111,6 +111,9 @@
     <Compile Include="TextConsole.xaml.cs">
       <DependentUpon>TextConsole.xaml</DependentUpon>
     </Compile>
+    <Compile Include="USModMixer.xaml.cs">
+      <DependentUpon>USModMixer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UltrasoundMixer.xaml.cs">
       <DependentUpon>UltrasoundMixer.xaml</DependentUpon>
     </Compile>
@@ -173,6 +176,10 @@
     <Page Include="TextConsole.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USModMixer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UltrasoundMixer.xaml">
       <SubType>Designer</SubType>

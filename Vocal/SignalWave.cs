@@ -546,6 +546,102 @@ namespace Vocal
         public int Waves { get; } = 1;
 
     }
+
+    public class WindowSine : SignalWave
+    {
+        public WindowSine(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            WindowType = windowType;
+            Level = 2.0;
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            WindowWaves = windowWaves;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var windowLength_ = 0.25 * WindowWaves / Frequency * SamplingRate;
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i <= windowLength_)
+                    {
+                        yield return Level * Math.Sin(Frequency/WindowWaves * 2 * Math.PI * i/SamplingRate);
+                    }
+                    else if(windowLength_ < i & i < Size - windowLength_) 
+                    {
+                        yield return Level;
+                    }
+                    else
+                    {
+                        yield return Level * Math.Sin(Frequency / WindowWaves * 2 * Math.PI * (Size - i) / SamplingRate);
+                    }
+                    
+
+                }
+            }
+        }
+
+        public USModWindowType WindowType { get; } = USModWindowType.Sine;
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 1000;
+        public double WindowWaves { get; set; } = 100;
+    }
+
+    public class WindowLiner : SignalWave
+    {
+        public WindowLiner(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            WindowType = windowType;
+            Level = 2.0;
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            WindowWaves = windowWaves;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var windowLength_ = 0.25 * WindowWaves / Frequency * SamplingRate;
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i <= windowLength_)
+                    {
+                        yield return Level * i / windowLength_;
+                    }
+                    else if (windowLength_ < i & i < Size - windowLength_)
+                    {
+                        yield return Level;
+                    }
+                    else
+                    {
+                        yield return Level* (Size - i) / windowLength_;
+                    }
+
+
+                }
+            }
+        }
+
+        public USModWindowType WindowType { get; } = USModWindowType.Sine;
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 1000;
+        public double WindowWaves { get; set; } = 100;
+    }
+
+
     /// <summary>
     /// trigger wave generator
     /// </summary>

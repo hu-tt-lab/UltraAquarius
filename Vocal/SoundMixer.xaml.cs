@@ -80,6 +80,17 @@ namespace Vocal
                 var x = Ultrasound.Find(name);
                 return new UltrasoundWave(x.Waveform, x.Frequency, x.Voltage, x.Waves, x.Duty, x.PRF, x.Pulses, SamplingRate, (x.Pulses / x.PRF));
             }
+            else if (type == SignalType.USMod)
+            {
+                var x = USMod.Find(name);
+                switch (x.WindowType)
+                {
+                    case USModWindowType.Sine:
+                        return new WindowSine(x.WindowType, x.Frequency, x.Voltage, x.Waves, x.WindowWaves, SamplingRate, x.Waves/x.Frequency);
+                    case USModWindowType.Liner:
+                        return new WindowLiner(x.WindowType, x.Frequency, x.Voltage, x.Waves, x.WindowWaves, SamplingRate, x.Waves / x.Frequency);
+                }
+            }
             else if (type == SignalType.Magnetic)
             {
                 var x = Magnetic.Find(name);
