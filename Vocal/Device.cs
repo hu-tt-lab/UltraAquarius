@@ -80,7 +80,7 @@ namespace Vocal
             var state = new NationalInstruments.DigitalState[trigger_.Signals.Count];
             for (var i = 0; i < state.Length; ++i)
             {
-                if ((number & (1 << (state.Length - i - 1))) != 0) state[i] = NationalInstruments.DigitalState.ForceUp;
+                if (((1<<number-1) & (1 << (state.Length - i - 1))) != 0) state[i] = NationalInstruments.DigitalState.ForceUp;
                 else state[i] = NationalInstruments.DigitalState.ForceDown;
             }
 
