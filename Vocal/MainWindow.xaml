@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control" Height="595" Width="1200" ResizeMode="CanMinimize">
+        Title="Vocal Control" Height="620" Width="1200" ResizeMode="CanMinimize">
     <Grid>
-        <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,10,894,16" />
-        <local:SoundMixer x:Name="Mixer" Margin="295,13,360,0" Height="540"  Width="540" VerticalAlignment="Top"/>
-        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="825,214,0,0" VerticalAlignment="Top" Width="353">
+        <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,894,16" />
+        <local:SoundMixer x:Name="Mixer" Margin="295,35,360,0" Height="540"  Width="540" VerticalAlignment="Top"/>
+        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="825,232,0,0" VerticalAlignment="Top" Width="353">
             <Grid>
-                <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="15" Margin="10,35,0,0" VerticalAlignment="Top" Width="280"/>
-                <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStartClick"/>
-                <Button x:Name="Stop" Content="Stop" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="OnStop"/>
-                <local:TextConsole x:Name="Console" Margin="10,55,10,10"/>
+                <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="15" Margin="10,39,0,0" VerticalAlignment="Top" Width="280"/>
+                <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" Width="75" Click="OnStartClick"/>
+                <Button x:Name="Stop" Content="Stop" HorizontalAlignment="Left" Margin="90,12,0,0" VerticalAlignment="Top" Width="75" Click="OnStop"/>
+                <local:TextConsole x:Name="Console" Margin="10,59,10,6"/>
             </Grid>
         </GroupBox>
 
-        <TabControl x:Name="Option" HorizontalAlignment="Left" Height="198" Margin="825,16,0,0" VerticalAlignment="Top" Width="347" >
+        <TabControl x:Name="Option" HorizontalAlignment="Left" Height="198" Margin="825,35,0,0" VerticalAlignment="Top" Width="347" >
             <TabItem Header="Trial">
                 <Grid Background="#FFE5E5E5">
                     <local:IntervalControl x:Name="Interval"/>
@@ -54,5 +54,24 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Menu HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="1194" RenderTransformOrigin="0.5,0.5">
+            <MenuItem Header="ファイル(_F)" RenderTransformOrigin="0.525,0.722" Height="25">
+                <MenuItem Header="刺激パラメータを保存する(_s)" />
+                <MenuItem Header="刺激パラメータを読み込みする(_r)" />
+                <MenuItem Header="刺激オーダーを保存する(_o)" />
+                <MenuItem Header="刺激オーダーを読み込みする(_q)" />
+                <MenuItem Header="終了" />
+            </MenuItem>
+            <MenuItem Header="ヘルプ(_H)">
+                <MenuItem Header="全般" />
+                <MenuItem Header="Pure Tone" />
+                <MenuItem Header="Click Tone" />
+                <MenuItem Header="AM Tone" />
+                <MenuItem Header="Ultrasound" />
+                <MenuItem Header="USMod" />
+                <MenuItem Header="Magnetic" />
+                <MenuItem Header="User Defined" />
+            </MenuItem> 
+        </Menu>
     </Grid>
 </Window>
