@@ -17,10 +17,11 @@ namespace Vocal
         public DAQControl()
         {
             InitializeComponent();
-            SoundChannelBox.ItemsSource = Channels;
-            TriggerChannelBox.ItemsSource = Channels;
-            ExDeviceChannelBox.ItemsSource = Channels;
-            ExDeviceTriggerChannelBox.ItemsSource = Channels;
+            SoundChannelBox.ItemsSource = AnalogChannels;
+            TriggerChannelBox.ItemsSource = AnalogChannels;
+            TriggerChannelBox.ItemsSource = DigitalChannels;
+            ExDeviceChannelBox.ItemsSource = AnalogChannels;
+            ALLTriggerChannelBox.ItemsSource = AnalogChannels;
 
         }
 
@@ -47,32 +48,33 @@ namespace Vocal
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, SoundChannelBox.SelectedValue.ToString());
+                return SoundChannelBox.SelectedValue.ToString();
             }
         }
         public string TriggerChannel
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, TriggerChannelBox.SelectedValue.ToString());
+                return TriggerChannelBox.SelectedValue.ToString();
             }
         }
-        public string ExDeviceTriggerChannel
+        public string ALLTriggerChannel
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, ExDeviceTriggerChannelBox.SelectedValue.ToString());
+                return ALLTriggerChannelBox.SelectedValue.ToString();
             }
         }
         public string ExDeviceChannel
         {
             get
             {
-                return string.Format("{0:g}/{1:g}", Identifer, ExDeviceChannelBox.SelectedValue.ToString());
+                return ExDeviceChannelBox.SelectedValue.ToString();
             }
         }
 
-        public ObservableCollection<string> Channels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2", "ao3" };
+        public ObservableCollection<string> AnalogChannels { get; set; } = new ObservableCollection<string> { "ao0", "ao1", "ao2", "ao3" };
+        public ObservableCollection<string> DigitalChannels { get; set; } = new ObservableCollection<string> { "Port0" };
     }
        
 }

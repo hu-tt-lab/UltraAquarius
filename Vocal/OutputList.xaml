@@ -31,6 +31,8 @@
                         <DataGridComboBoxColumn Header="Type" SelectedItemBinding="{Binding Type}"  ItemsSource="{Binding Source={StaticResource SignalType}}"/>
                         <!--signal variable text box-->
                         <DataGridTextColumn Header="Signal Name" Binding="{Binding Variable}" Width="*"/>
+                        <!--signal identifer text box-->
+                        <DataGridTextColumn Header="Signal Number" Binding="{Binding Number}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 

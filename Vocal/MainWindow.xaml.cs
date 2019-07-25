@@ -141,12 +141,12 @@ namespace Vocal
 
                 Console.WriteLine("Start to output")
                     .WriteLine("Device number: {0:g}", Configure.Identifer)
-                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}, FunGene = {2:g} FunGeneTrigger = {3:g}", Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ExDeviceTriggerChannel)
+                    .WriteLine("Channel Mode: Sound = {0:g}, Trigger = {1:g}, ExDevice = {2:g} AllTrigger = {3:g}", Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ALLTriggerChannel)
                     .WriteLine("Trigger Level: {0:f1} Function Generator Trigger Level: {1:f1}", TriggerLevel, FunGeneTriggerLevel)
                     .Return()
                     .End();
 
-                var signals = Output.List.Select(x => (Name: x.Name, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
+                var signals = Output.List.Select(x => (Name: x.Name, Number: x.Number, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
                 var duration = signals.Max(x => x.Signal.Duration);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
@@ -168,8 +168,8 @@ namespace Vocal
                 }
 
                 // create device buffer
-                using (var device = new Device(Configure.SamplingRate, duration, Configure.SoundChannel, Configure.TriggerChannel, Configure.ExDeviceChannel, Configure.ExDeviceTriggerChannel))
-                {
+                using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ALLTriggerChannel))
+                {//Digital Trigger, Sound channel, ExDevice channel, All Trigger channel
                     var table = new List<int>[trial];
                     if (Random.SelectedIndex == 1)
                     {
@@ -205,19 +205,20 @@ namespace Vocal
                                 .WriteLine("Type: {0:g}", signal.Type)
                                 .Return()
                                 .End();
+                            //Digital Trigger, Sound channel, ExDevice channel, All Trigger channel
                             if (signal.Type == SignalType.Ultrasound)
                             {
                                 Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
-                                device.Output(nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
                             }
                             else if(signal.Type == SignalType.Magnetic)
                             {
                                 Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
-                                device.Output(nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
                             }
                             else
                             {
-                                device.Output(signal.Signal.Wave, trigger.Wave, nonuse.Wave, nonuse.Wave);
+                                device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
                             }
                             
                             await Task.Delay(Interval.Interval, Cancellation.Token);
@@ -234,24 +235,24 @@ namespace Vocal
                             if (variable.Type == SignalType.Click)
                             {
                                 var wave = variable.Signal as ClickWave;
-                                return (object)(new { name = variable.Name, duration = wave.Duration, decibel = wave.Decibel, type = variable.Type.ToString() });
+                                return (object)(new { number = variable.Number, name = variable.Name, duration = wave.Duration, decibel = wave.Decibel, type = variable.Type.ToString() });
                             }
                             else if (variable.Type == SignalType.Pure)
                             {
                                 var pure = variable.Signal as PureWave;
                                 if (pure != null)
                                 {
-                                    return new { name = variable.Name, duration = pure.Duration, decibel = pure.Decibel, frequency = pure.Frequency, type = variable.Type.ToString(), tonetype = "PureTone" };
+                                    return new { number = variable.Number, name = variable.Name, duration = pure.Duration, decibel = pure.Decibel, frequency = pure.Frequency, type = variable.Type.ToString(), tonetype = "PureTone" };
                                 }
                                 var pip = variable.Signal as PipWave;
                                 if (pip != null)
                                 {
-                                    return new { name = variable.Name, duration = pip.Duration, decibel = pip.Decibel, frequency = pip.Frequency, type = variable.Type.ToString(), tonetype = "TonePip" };
+                                    return new { number = variable.Number, name = variable.Name, duration = pip.Duration, decibel = pip.Decibel, frequency = pip.Frequency, type = variable.Type.ToString(), tonetype = "TonePip" };
                                 }
                                 var burst = variable.Signal as BurstWave;
                                 if (burst != null)
                                 {
-                                    return new { name = variable.Name, duration = burst.Duration, decibel = burst.Decibel, frequency = burst.Frequency, type = variable.Type.ToString(), tonetype = "ToneBurst" };
+                                    return new { number = variable.Number, name = variable.Name, duration = burst.Duration, decibel = burst.Decibel, frequency = burst.Frequency, type = variable.Type.ToString(), tonetype = "ToneBurst" };
                                 }
                                 else
                                 {
@@ -261,40 +262,40 @@ namespace Vocal
                             else if (variable.Type == SignalType.Modulation)
                             {
                                 var signal = variable.Signal as AmplitudeModulationWave;
-                                return new { name = variable.Name, duration = signal.Duration, decibel = signal.Decibel, frequency = signal.Frequency, type = variable.Type.ToString(), modulation = signal.Modulation };
+                                return new { number = variable.Number, name = variable.Name, duration = signal.Duration, decibel = signal.Decibel, frequency = signal.Frequency, type = variable.Type.ToString(), modulation = signal.Modulation };
                             }
                             else if (variable.Type == SignalType.Ultrasound)
                             {
                                 var signal = variable.Signal as UltrasoundWave;
-                                return new { name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
+                                return new { number = variable.Number, name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
                             }
                             else if (variable.Type == SignalType.Magnetic)
                             {
                                 var magpulse = variable.Signal as MagneticWave;
                                 if (magpulse != null)
                                 {
-                                    return new { name = variable.Name, voltage = magpulse.Voltage, duration = (magpulse.Duration / magpulse.Waves - magpulse.Interval), raisedur = magpulse.RaiseDuration, falldur = magpulse.FallDuration, interval = magpulse.Interval, waves = magpulse.Waves, type = variable.Type.ToString(), signaltype = magpulse.Waveform };
+                                    return new { number = variable.Number, name = variable.Name, voltage = magpulse.Voltage, duration = (magpulse.Duration / magpulse.Waves - magpulse.Interval), raisedur = magpulse.RaiseDuration, falldur = magpulse.FallDuration, interval = magpulse.Interval, waves = magpulse.Waves, type = variable.Type.ToString(), signaltype = magpulse.Waveform };
                                 }
                                 /*
                                 var frontsaw = variable.Signal as FrontEdgeSawPulse;
                                 if (frontsaw != null)
                                 {
-                                    return new { name = variable.Name, voltage = frontsaw.Voltage, duration = (frontsaw.Duration/ frontsaw.Waves - frontsaw.Interval), interval = frontsaw.Interval, waves = frontsaw.Waves, type = variable.Type.ToString(), signaltype = "FrontEdgeSawPulse" };
+                                    return new {number = variable.Number, name = variable.Name, voltage = frontsaw.Voltage, duration = (frontsaw.Duration/ frontsaw.Waves - frontsaw.Interval), interval = frontsaw.Interval, waves = frontsaw.Waves, type = variable.Type.ToString(), signaltype = "FrontEdgeSawPulse" };
                                 }
                                 var lastsaw = variable.Signal as LastEdgeSawPulse;
                                 if (lastsaw != null)
                                 {
-                                    return new { name = variable.Name, voltage = lastsaw.Voltage, duration = (lastsaw.Duration / lastsaw.Waves - lastsaw.Interval), interval = lastsaw.Interval, waves = lastsaw.Waves, type = variable.Type.ToString(), signaltype = "LastEdgeSawPulse" };
+                                    return new {number = variable.Number, name = variable.Name, voltage = lastsaw.Voltage, duration = (lastsaw.Duration / lastsaw.Waves - lastsaw.Interval), interval = lastsaw.Interval, waves = lastsaw.Waves, type = variable.Type.ToString(), signaltype = "LastEdgeSawPulse" };
                                 }
                                 var square = variable.Signal as SquarePulse;
                                 if (square != null)
                                 {
-                                    return new { name = variable.Name, voltage = square.Voltage, duration = (square.Duration / square.Waves - square.Interval), interval = square.Interval, waves = square.Waves, type = variable.Type.ToString(), signaltype = "SquarePulse" };
+                                    return new {number = variable.Number, name = variable.Name, voltage = square.Voltage, duration = (square.Duration / square.Waves - square.Interval), interval = square.Interval, waves = square.Waves, type = variable.Type.ToString(), signaltype = "SquarePulse" };
                                 }
                                 var triangle = variable.Signal as TrianglePulse;
                                 if (triangle != null)
                                 {
-                                    return new { name = variable.Name, voltage = triangle.Voltage, duration = (triangle.Duration / triangle.Waves - triangle.Interval), interval = triangle.Interval, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "TrianglePulse" };
+                                    return new {number = variable.Number, name = variable.Name, voltage = triangle.Voltage, duration = (triangle.Duration / triangle.Waves - triangle.Interval), interval = triangle.Interval, waves = triangle.Waves, type = variable.Type.ToString(), signaltype = "TrianglePulse" };
                                 }
                                 */
                                 else

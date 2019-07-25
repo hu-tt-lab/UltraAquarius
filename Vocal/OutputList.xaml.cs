@@ -38,12 +38,13 @@ namespace Vocal
             public bool Valid { get; set; } = true;
             public string Variable { get; set; }
             public SignalType Type { get; set; }
-
+            public string Number { get; set; }
             public Optional(Optional rhs)
             {
                 Valid = rhs.Valid;
                 Variable = rhs.Variable;
                 Type = rhs.Type;
+                Number = rhs.Number;
             }
 
             public Optional() { }
@@ -57,7 +58,7 @@ namespace Vocal
             TableView.DataContext = Rows;
         }
 
-        public IEnumerable<(string Name, SignalType Type)> List
+        public IEnumerable<(string Name, SignalType Type, Int32 Number)> List
         {
             get
             {
@@ -65,7 +66,7 @@ namespace Vocal
                 {
                     if (e.Valid == true)
                     {
-                        yield return (Name: e.Variable, Type: e.Type);
+                        yield return (Name: e.Variable, Type: e.Type, Number: Int32.Parse(e.Number));
                     }
                 }
             }

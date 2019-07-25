@@ -21,7 +21,7 @@
 
         <Label Content="Ex device Channel" HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="ExDeviceChannelBox" HorizontalAlignment="Left" Height="23"  Margin="10,106,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="2"/>
-        <Label Content="Ex device Trigger Channel" HorizontalAlignment="Left" Margin="160,83,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="ExDeviceTriggerChannelBox" HorizontalAlignment="Left" Height="23"  Margin="160,106,0,0" VerticalAlignment="Top" Width="110" SelectedIndex="3"/>
+        <Label Content="ALL Trigger Channel" HorizontalAlignment="Left" Margin="160,83,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="ALLTriggerChannelBox" HorizontalAlignment="Left" Height="23"  Margin="160,106,0,0" VerticalAlignment="Top" Width="110" SelectedIndex="3"/>
     </Grid>
 </UserControl>

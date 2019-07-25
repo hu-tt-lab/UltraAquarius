@@ -13,36 +13,56 @@ namespace Vocal
         public double Duration { get; }
         public int Capacity { get { return (int)(SamplingRate * Duration); } }
         public int Count { get { return Channels.Length; } }
+        public string Port { get; }
 
-        private Task task_;
-        private double[,] data_;
+        private string ClockSource { get; }
+        private string Name { get; }
 
-        public Device(double samplingRate, double duration, params string[] channels)
+        private string ToOutputChannel(string channel)
         {
+            return string.Format("{0:g}/{1:g}", Name, channel);
+        }
+        private string ToClockChannel(string channel)
+        {
+            return string.Format("/{0:g}/{1:g}", Name, channel);
+        }
+
+        private (Task analog, Task digital) task_;
+        private double[,] data_;
+        private NationalInstruments.DigitalWaveform trigger_;
+
+        public Device(string device, double samplingRate, double duration, string port, params string[] channels)
+        {
+            Name = device;
             Channels = channels;
             SamplingRate = samplingRate;
             Duration = duration;
             data_ = new double[Channels.Length, Capacity + 10];
-
+            trigger_ = new NationalInstruments.DigitalWaveform(data_.GetLength(1), 8, NationalInstruments.DigitalState.ForceDown);
+            ClockSource = "ao/SampleClock";
+            Port = string.Format("{0:g}/line0:7", port);
             var voltage = (max: 10, min: -10);
 
 #if DEBUG
 #else
-            task_ = new Task();
+            task_ = (analog: new Task(), digital: new Task());
             foreach (var e in channels)
             {
-                task_.AOChannels.CreateVoltageChannel(e, "", voltage.min, voltage.max, AOVoltageUnits.Volts);
+                task_.analog.AOChannels.CreateVoltageChannel(ToOutputChannel(e), "", voltage.min, voltage.max, AOVoltageUnits.Volts);
             }
-            task_.Timing.ConfigureSampleClock("", SamplingRate, SampleClockActiveEdge.Rising,
-                SampleQuantityMode.FiniteSamples, data_.GetLength(1));
+            task_.analog.Timing.ConfigureSampleClock("", SamplingRate, SampleClockActiveEdge.Rising,
+                            SampleQuantityMode.FiniteSamples, data_.GetLength(1));
+            task_.analog.Done += (sender, e) => { task_.digital.Stop(); task_.analog.Stop(); };
 
-            task_.Done += (sender, e) => task_.Stop();
+            task_.digital.DOChannels.CreateChannel(ToOutputChannel(Port), "", ChannelLineGrouping.OneChannelForAllLines);
+            task_.digital.Timing.ConfigureSampleClock(ToClockChannel(ClockSource), samplingRate, SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples, data_.GetLength(1));
 #endif
         }
 
-        public void Output(params IEnumerable<double>[] waves)
+        public void Output(int number, params IEnumerable<double>[] waves)
         {
-            for(var u = 0; u < data_.GetLength(0); ++u)
+            for (var u = 0; u < data_.GetLength(0); ++u)
             {
                 for(var v = 0; v < data_.GetLength(1); ++v)
                 {
@@ -57,14 +77,30 @@ namespace Vocal
                     data_[k, i] = e;
                 }
             }
+            var state = new NationalInstruments.DigitalState[trigger_.Signals.Count];
+            for (var i = 0; i < state.Length; ++i)
+            {
+                if ((number & (1 << (state.Length - i - 1))) != 0) state[i] = NationalInstruments.DigitalState.ForceUp;
+                else state[i] = NationalInstruments.DigitalState.ForceDown;
+            }
 
+            for (var t = 0; t < trigger_.Samples.Count / 10; ++t)
+            {
+                for (var i = 0; i < trigger_.Samples[t].States.Count; ++i)
+                {
+                    trigger_.Samples[t].States[i] = state[i];
+                }
+            }
 #if DEBUG
 #else
-            var stream = new AnalogMultiChannelWriter(task_.Stream);
-            stream.WriteMultiSample(false, data_);
-            task_.Start();
+            var digital = new DigitalSingleChannelWriter(task_.digital.Stream);
+            digital.WriteWaveform(false, trigger_);
+            var analog = new AnalogMultiChannelWriter(task_.analog.Stream);
+            analog.WriteMultiSample(false, data_);
+            task_.digital.Start();
+            task_.analog.Start();
 
-            task_.WaitUntilDone();
+            task_.analog.WaitUntilDone();
 #endif
         }
 
@@ -72,7 +108,8 @@ namespace Vocal
         {
 #if DEBUG
 #else
-            task_.Dispose();
+            task_.analog.Dispose();
+            task_.digital.Dispose();
 #endif
         }
     }
