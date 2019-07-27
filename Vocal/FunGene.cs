@@ -126,6 +126,7 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:PULSe:TRANsition:TRAiling " + parameter.FallDuration / 1000000 + "S");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet " + Math.Round(parameter.Voltage / 2, 3).ToString() + "V");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + "VPP");
+                        //Don't Need Space between voltage and unit
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
                         DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                         DMM.WriteString(":OUTPut1:POLarity PULSe, NORMal");
@@ -135,6 +136,7 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
                         DMM.WriteString(":SOURce1:PULSe:PERiod " + (parameter.Duration + parameter.Interval)/1000000 + "S");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPK");
+                        //Need Space between voltage and unit
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet 0.0V");
                         DMM.WriteString(":SOURce1:FUNCtion:SQUare:DCYCle " + Math.Round(parameter.Duration/(parameter.Duration + parameter.Interval)*100,4) + "PCT");
                         DMM.WriteString(":SOURce1:PHASe:ADJust -0.001DEG");
