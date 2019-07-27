@@ -56,8 +56,8 @@
         </TabControl>
         <Menu HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="1194" RenderTransformOrigin="0.5,0.5">
             <MenuItem Header="ファイル(_F)" RenderTransformOrigin="0.525,0.722" Height="25">
-                <MenuItem Header="刺激パラメータを保存する(_s)" />
-                <MenuItem Header="刺激パラメータを読み込みする(_r)" />
+                <MenuItem Header="刺激パラメータを保存する(_s)" Click="OnMixerSave"/>
+                <MenuItem Header="刺激パラメータを読み込みする(_r)" Click="OnMixerLoad"/>
                 <MenuItem Header="刺激オーダーを保存する(_o)" />
                 <MenuItem Header="刺激オーダーを読み込みする(_q)" />
                 <MenuItem Header="終了" />

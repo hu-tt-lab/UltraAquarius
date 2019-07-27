@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -31,10 +32,46 @@ namespace Vocal
         public UltrasoundWaveform Waveform { get; set; } = UltrasoundWaveform.Sine;
         public double Voltage { get; set; } = 0.5;
         public double Frequency { get; set; } = 500000;
-        public int Waves { get; set; } = 80;
+        public double Waves { get; set; } = 80;
         public double Duty { get; set; } = 50;
         public double PRF { get; set; } = 1500;
         public int Pulses { get; set; } = 150;
+
+        public Ultrasound() { }
+        public Ultrasound(JsonUltrasound rhs)
+        {
+            Waveform  = (UltrasoundWaveform)Enum.Parse(typeof(UltrasoundWaveform), rhs.Waveform, true);
+            Voltage  = rhs.Voltage;
+            Frequency  = rhs.Frequency;
+            Waves  = rhs.Waves;
+            Duty  = rhs.Duty;
+            PRF  = rhs.PRF;
+            Pulses  = rhs.Pulses;
+        }
+
+    }
+
+    public class JsonUltrasound
+    {
+        public string Waveform { get; set; } = "Sine";
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 80;
+        public double Duty { get; set; } = 50;
+        public double PRF { get; set; } = 1500;
+        public int Pulses { get; set; } = 150;
+
+        public JsonUltrasound(Ultrasound rhs)
+        {
+            Waveform = rhs.Waveform.ToString();
+            Voltage = rhs.Voltage;
+            Frequency = rhs.Frequency;
+            Waves = rhs.Waves;
+            Duty = rhs.Duty;
+            PRF = rhs.PRF;
+            Pulses = rhs.Pulses;
+        }
+
     }
 
     /// <summary>
@@ -79,6 +116,30 @@ namespace Vocal
             var values = Rows.Where(x => Regex.IsMatch(x.Name, @"\d+")).ToList();
             var id = values.Count != 0 ? values.Select(x => int.Parse(Regex.Match(x.Name, @"\d+").Value)).Max() + 1 : 0;
             Rows.Add(new Variable { Name = string.Format("us{0:d}", id), Signal = new Ultrasound() });
+        }
+
+        public void Load(object[] rhs)
+        {
+            Rows.Clear();
+            foreach (var i in rhs)
+            {
+                var json = DynamicJson.Parse(i.ToString());
+                var tmp = new Ultrasound();
+                tmp.Frequency = (double)json.Signal.Frequency;
+                tmp.Voltage = (double)json.Signal.Voltage;
+                tmp.Waves = (double)json.Signal.Waves;
+                tmp.Waveform = (UltrasoundWaveform)Enum.Parse(typeof(UltrasoundWaveform), json.Signal.Waveform, true); ;
+                tmp.Waves = (double)json.Signal.Waves;
+                tmp.Duty = (double)json.Signal.Duty;
+                tmp.PRF = (double)json.Signal.PRF;
+                tmp.Pulses = (int)json.Signal.Pulses;
+                Rows.Add(new Variable { Name = json.Name, Signal = tmp });
+            }
+
+        }
+        public List<Variable> Save()
+        {
+            return Rows.ToList();
         }
 
         private void OnAdd(object sender, RoutedEventArgs e)

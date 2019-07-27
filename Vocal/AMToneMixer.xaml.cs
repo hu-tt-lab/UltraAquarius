@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -63,6 +64,29 @@ namespace Vocal
             var values = Rows.Where(x => Regex.IsMatch(x.Name, @"\d+")).ToList();
             var id = values.Count != 0?values.Select(x => int.Parse(Regex.Match(x.Name, @"\d+").Value)).Max() + 1:0;
             Rows.Add(new Variable { Name = string.Format("am{0:d}", id), Signal = new AmTone() });
+        }
+        public List<Variable> Save()
+        {
+            return Rows.ToList();
+        }
+        public void Load(List<Variable> rhs)
+        {
+            Rows.Clear();
+            foreach (var i in rhs)
+            {
+                Rows.Add(i);
+            }
+
+        }
+        public void Load(object[] rhs)
+        {
+            Rows.Clear();
+            foreach (var i in rhs)
+            {
+                var json = DynamicJson.Parse(i.ToString());
+                Rows.Add(new Variable { Name = json.Name, Signal = json.Signal });
+            }
+
         }
 
         private void OnAdd(object sender, RoutedEventArgs e)

@@ -214,7 +214,7 @@ namespace Vocal
     /// </summary>
     public class UltrasoundWave : SignalWave
     {
-        public UltrasoundWave(UltrasoundWaveform waveform, double frequency, double voltage, int waves, double duty, double prf, int Pulses, double sampling, double duration)
+        public UltrasoundWave(UltrasoundWaveform waveform, double frequency, double voltage, double waves, double duty, double prf, int Pulses, double sampling, double duration)
             : base(sampling, duration, 0)
         {
             Waveform = waveform;

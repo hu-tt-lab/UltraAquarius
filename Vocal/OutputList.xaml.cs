@@ -47,6 +47,13 @@ namespace Vocal
                 Type = rhs.Type;
                 Number = rhs.Number;
             }
+            public Optional(bool valid, string variable, SignalType type, string number)
+            {
+                Valid = valid;
+                Variable = variable;
+                Type = type;
+                Number = number;
+            }
 
             public Optional() { }
         }

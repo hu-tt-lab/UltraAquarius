@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -33,6 +34,36 @@ namespace Vocal
         public double Frequency { get; set; } = 500000;
         public double Waves { get; set; } = 1000;
         public double WindowWaves { get; set; } = 100;
+
+        public USMod() { }
+
+        public USMod(JsonUSMod rhs)
+        {
+            WindowType = (USModWindowType)Enum.Parse(typeof(USModWindowType), rhs.WindowType, true);
+            Voltage = rhs.Voltage;
+            Frequency = rhs.Frequency;
+            Waves = rhs.Waves;
+            WindowWaves = rhs.WindowWaves;
+        }
+
+    }
+
+    public class JsonUSMod
+    {
+        public string WindowType { get; set; } = "Sine";
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 1000;
+        public double WindowWaves { get; set; } = 100;
+
+        public JsonUSMod(USMod rhs)
+        {
+            WindowType = rhs.WindowType.ToString();
+            Voltage = rhs.Voltage;
+            Frequency = rhs.Frequency;
+            Waves = rhs.Waves;
+            WindowWaves = rhs.WindowWaves;
+        }
     }
 
     /// <summary>
@@ -79,6 +110,26 @@ namespace Vocal
             Rows.Add(new Variable { Name = string.Format("usm{0:d}", id), Signal = new USMod() });
         }
 
+        public List<Variable> Save()
+        {
+            return Rows.ToList();
+        }
+        public void Load(object[] rhs)
+        {
+            Rows.Clear();
+            foreach (var i in rhs)
+            {
+                var tmp = new USMod();
+                var json = DynamicJson.Parse(i.ToString());
+                tmp.Frequency = (double)json.Signal.Frequency;
+                tmp.Voltage = (double)json.Signal.Voltage;
+                tmp.Waves = (double)json.Signal.Waves;
+                tmp.WindowType = (USModWindowType)Enum.Parse(typeof(USModWindowType), json.Signal.WindowType, true); ;
+                tmp.WindowWaves = (double)json.Signal.WindowWaves;
+                Rows.Add(new Variable { Name = json.Name, Signal = tmp});
+            }
+
+        }
         private void OnAdd(object sender, RoutedEventArgs e)
         {
             Push();

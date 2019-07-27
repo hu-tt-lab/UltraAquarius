@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -25,6 +26,33 @@ namespace Vocal
         public double Decibel { get; set; } = 60;
         public double Frequency { get; set; } = 4000;
         public double Duration { get; set; } = 100;
+
+        public PureTone() { }
+
+        public PureTone(dynamic rhs)
+        {
+            Tone = (PureToneType)Enum.Parse(typeof(PureToneType),rhs.Tone,true);
+            Decibel = rhs.Decibel;
+            Frequency = rhs.Frequency;
+            Duration = rhs.Duration;
+
+        }
+    }
+
+    public class JsonPureTone
+    {
+        public string Tone { get; set; } = "PureTone";
+        public double Decibel { get; set; } = 60;
+        public double Frequency { get; set; } = 4000;
+        public double Duration { get; set; } = 100;
+
+        public JsonPureTone(PureTone rhs)
+        {
+            Tone = rhs.Tone.ToString();
+            Decibel = rhs.Decibel;
+            Frequency = rhs.Frequency;
+            Duration = rhs.Duration;
+        }
     }
 
     /// <summary>
@@ -72,6 +100,21 @@ namespace Vocal
             var values = Rows.Where(x => Regex.IsMatch(x.Name, @"\d+")).ToList();
             var id = values.Count != 0?values.Select(x => int.Parse(Regex.Match(x.Name, @"\d+").Value)).Max() + 1:0;
             Rows.Add(new Variable { Name = string.Format("p{0:d}", id), Signal = new PureTone() });
+        }
+        public List<Variable> Save()
+        {
+            return Rows.ToList();
+        }
+
+        public void Load(object[] rhs)
+        {
+            Rows.Clear();
+            foreach(var i in rhs)
+            {
+                var json = DynamicJson.Parse(i.ToString());
+                Rows.Add(new Variable { Name = json.Name, Signal = new PureTone(json.Signal) });
+            }
+            
         }
 
         private void OnAdd(object sender, RoutedEventArgs e)

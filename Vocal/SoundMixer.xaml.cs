@@ -34,6 +34,7 @@ namespace Vocal
             ModulationTone.Lock();
             Ultrasound.Lock();
             Magnetic.Lock();
+            USMod.Lock();
             UserDefined.Lock();
         }
 
@@ -44,6 +45,7 @@ namespace Vocal
             ModulationTone.Unlock();
             Ultrasound.Unlock();
             Magnetic.Unlock();
+            USMod.Unlock();
             UserDefined.Unlock();
         }
 

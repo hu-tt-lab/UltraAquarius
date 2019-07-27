@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Codeplex.Data;
 using Ivi.Visa.Interop;
+using System.Runtime.Serialization;
 
 namespace Vocal
 {
@@ -334,7 +335,47 @@ namespace Vocal
             Cancellation.Cancel();
             SetBuzy();
         }
+        
+        public void LoadMixer()
+        {
+            using (var reader = new StreamReader("Mixer.json"))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Mixer.PureTone.Load((object[])json.PureTone);
+                Mixer.ClickTone.Load((object[])json.ClickTone);
+                Mixer.ModulationTone.Load((object[])json.ModulationTone);
+                Mixer.Magnetic.Load((object[])json.Magnetic);
+                Mixer.Ultrasound.Load((object[])json.Ultrasound);
+                Mixer.USMod.Load((object[])json.USMod);
+            }
 
-
+        }
+        private void OnMixerLoad(object sender, RoutedEventArgs e)
+        {
+            LoadMixer();
+        }
+        public void SaveMixer()
+        {
+            using (var writer = new StreamWriter("Mixer.json"))
+            {
+                var contents = DynamicJson.Parse(DynamicJson.Serialize(
+                    new
+                    {
+                        PureTone = Mixer.PureTone.Save().Select(x => new { Name = x.Name, Signal = new JsonPureTone(x.Signal)}).ToList(),
+                        ClickTone = Mixer.ClickTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
+                        ModulationTone = Mixer.ModulationTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
+                        Magnetic = Mixer.Magnetic.Save().Select(x => new { Name = x.Name, Signal = new JsonMagnetic(x.Signal)}).ToList(),
+                        Ultrasound = Mixer.Ultrasound.Save().Select(x => new { Name = x.Name, Signal = new JsonUltrasound(x.Signal)}).ToList(),
+                        USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal)}).ToList()
+                    }
+                ));
+                //変換用のClassとコンストラクタ作って相互に変換することにします，enumツラミ
+                writer.WriteLine(contents);
+            }
+        }
+        private void OnMixerSave(object sender, RoutedEventArgs e)
+        {
+            SaveMixer();
+        }
     }
 }

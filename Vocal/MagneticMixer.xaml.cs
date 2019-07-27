@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -32,7 +33,7 @@ namespace Vocal
         }
 
         public class Magnetic
-    {
+        {
             public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Pulse;
             public double Voltage { get; set; } = 1;
             public double Duration { get; set; } = 500;
@@ -41,7 +42,44 @@ namespace Vocal
             public double Interval { get; set; } = 10;
             public int Waves { get; set; } = 1;
 
+
+            
+            public Magnetic(JsonMagnetic rhs)
+            {
+                Waveform = (MagneticWaveform)Enum.Parse(typeof(MagneticWaveform), rhs.Waveform, true);
+                Voltage = rhs.Voltage;
+                Duration = rhs.Duration;
+                RaiseDuration = rhs.RaiseDuration;
+                FallDuration = rhs.FallDuration;
+                Interval = rhs.Interval;
+                Waves = rhs.Waves;
+            }
+
+            public Magnetic() { }
+
         }
+        
+        public class JsonMagnetic
+        {
+            public string Waveform { get; set; } = "Pulse";
+            public double Voltage { get; set; } = 1;
+            public double Duration { get; set; } = 500;
+            public double RaiseDuration { get; set; } = 50.1;
+            public double FallDuration { get; set; } = 50.1;
+            public double Interval { get; set; } = 10;
+            public int Waves { get; set; } = 1;
+
+            public JsonMagnetic(Magnetic rhs)
+            {
+                Waveform = rhs.Waveform.ToString();
+                Voltage = rhs.Voltage;
+                Duration = rhs.Duration;
+                RaiseDuration = rhs.RaiseDuration;
+                FallDuration = rhs.FallDuration;
+                Interval = rhs.Interval;
+                Waves = rhs.Waves;
+            }
+    }
 
         /// <summary>
         /// PureToneMixer.xaml の相互作用ロジック
@@ -87,6 +125,28 @@ namespace Vocal
                 Rows.Add(new Variable { Name = string.Format("mg{0:d}", id), Signal = new Magnetic() });
             }
 
+            public List<Variable> Save()
+            {
+                return Rows.ToList();
+            }
+            public void Load(object[] rhs)
+            {
+                Rows.Clear();
+                foreach (var i in rhs)
+                {
+                    var tmp = new Magnetic();
+                    var json = DynamicJson.Parse(i.ToString());
+                    tmp.Waveform = (MagneticWaveform)Enum.Parse(typeof(MagneticWaveform), json.Signal.Waveform, true);
+                    tmp.Voltage = (double)json.Signal.Voltage;
+                    tmp.Duration = (double)json.Signal.Duration;
+                    tmp.RaiseDuration = (double)json.Signal.RaiseDuration;
+                    tmp.FallDuration = (double)json.Signal.FallDuration;
+                    tmp.Interval = (double)json.Signal.Interval;
+                    tmp.Waves = (int)json.Signal.Waves;
+                    Rows.Add(new Variable { Name = json.Name, Signal = tmp });
+                }
+
+            }
             private void OnAdd(object sender, RoutedEventArgs e)
             {
                 Push();
@@ -117,6 +177,7 @@ namespace Vocal
             {
                 return Key;
             }
+            
 
             public Magnetic Find(string key)
             {
