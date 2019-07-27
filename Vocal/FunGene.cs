@@ -165,7 +165,7 @@ namespace Vocal
         {
             try
             {
-                DMM.WriteString(":SOURce1:AM:SOURce EXTernal");
+                DMM.WriteString(":SOURce1:AMSC:SOURce EXTernal");
                 DMM.WriteString(":SOURce1:FUNCtion:SHAPe SIN");
                 DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
                 //DMM.WriteString(":SOURce1:AM:INTernal:FUNCtion:SHAPe SIN");
@@ -175,7 +175,7 @@ namespace Vocal
                     throw new ArgumentException("Over Applied Max Voltage !");
                 }
                 DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
-                DMM.WriteString(":SOURce1:AM:DEPTh 100.0PCT");
+                DMM.WriteString(":SOURce1:AMSC:DEPTh 100.0PCT");
                 DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                 DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
                 DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
@@ -264,8 +264,8 @@ namespace Vocal
                                 DMM.WriteString(":SOURce:BURSt:STATe ON");
                                 DMM.WriteString(":SOURce1:BURSt:MODE TRIG");
                                 break;
-                            case "AM":
-                                DMM.WriteString(":SOURce1:AM:STATe ON");
+                            case "AMSC":
+                                DMM.WriteString(":SOURce1:AMSC:STATe ON");
                                 break;
                             default: throw new InvalidOperationException();
                         }

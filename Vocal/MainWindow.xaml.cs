@@ -172,7 +172,7 @@ namespace Vocal
                     var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
                     Fungene.Open(name.Resource);
                     Fungene.OnOff("OFF");
-                    Fungene.Oscillation("AM");
+                    Fungene.Oscillation("AMSC");
                 }
 
                 // create device buffer

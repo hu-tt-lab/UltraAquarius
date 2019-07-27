@@ -553,7 +553,7 @@ namespace Vocal
             : base(sampling, duration, 0)
         {
             WindowType = windowType;
-            Level = 2.0;
+            Level = 1.0;
             Frequency = frequency;
             Voltage = voltage;
             Waves = waves;
@@ -600,7 +600,7 @@ namespace Vocal
             : base(sampling, duration, 0)
         {
             WindowType = windowType;
-            Level = 2.0;
+            Level = 1.0;
             Frequency = frequency;
             Voltage = voltage;
             Waves = waves;
