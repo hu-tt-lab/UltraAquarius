@@ -338,55 +338,82 @@ namespace Vocal
         
         public void LoadMixer()
         {
-            using (var reader = new StreamReader("Mixer.json"))
+            try
             {
-                var json = DynamicJson.Parse(reader.ReadToEnd());
-                Mixer.PureTone.Load((object[])json.PureTone);
-                Mixer.ClickTone.Load((object[])json.ClickTone);
-                Mixer.ModulationTone.Load((object[])json.ModulationTone);
-                Mixer.Magnetic.Load((object[])json.Magnetic);
-                Mixer.Ultrasound.Load((object[])json.Ultrasound);
-                Mixer.USMod.Load((object[])json.USMod);
+                using (var reader = new StreamReader("Mixer.json"))
+                {
+                    var json = DynamicJson.Parse(reader.ReadToEnd());
+                    Mixer.PureTone.Load((object[])json.PureTone);
+                    Mixer.ClickTone.Load((object[])json.ClickTone);
+                    Mixer.ModulationTone.Load((object[])json.ModulationTone);
+                    Mixer.Magnetic.Load((object[])json.Magnetic);
+                    Mixer.Ultrasound.Load((object[])json.Ultrasound);
+                    Mixer.USMod.Load((object[])json.USMod);
+                }
             }
-
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
         }
 
         public void SaveMixer()
         {
-            using (var writer = new StreamWriter("Mixer.json"))
+            try
             {
-                var contents = DynamicJson.Parse(DynamicJson.Serialize(
-                    new
-                    {
-                        PureTone = Mixer.PureTone.Save().Select(x => new { Name = x.Name, Signal = new JsonPureTone(x.Signal)}).ToList(),
-                        ClickTone = Mixer.ClickTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
-                        ModulationTone = Mixer.ModulationTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
-                        Magnetic = Mixer.Magnetic.Save().Select(x => new { Name = x.Name, Signal = new JsonMagnetic(x.Signal)}).ToList(),
-                        Ultrasound = Mixer.Ultrasound.Save().Select(x => new { Name = x.Name, Signal = new JsonUltrasound(x.Signal)}).ToList(),
-                        USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal)}).ToList()
-                    }
-                ));
-                writer.WriteLine(contents);
+                using (var writer = new StreamWriter("Mixer.json"))
+                {
+                    var contents = DynamicJson.Parse(DynamicJson.Serialize(
+                        new
+                        {
+                            PureTone = Mixer.PureTone.Save().Select(x => new { Name = x.Name, Signal = new JsonPureTone(x.Signal)}).ToList(),
+                            ClickTone = Mixer.ClickTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
+                            ModulationTone = Mixer.ModulationTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal}).ToList(),
+                            Magnetic = Mixer.Magnetic.Save().Select(x => new { Name = x.Name, Signal = new JsonMagnetic(x.Signal)}).ToList(),
+                            Ultrasound = Mixer.Ultrasound.Save().Select(x => new { Name = x.Name, Signal = new JsonUltrasound(x.Signal)}).ToList(),
+                            USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal)}).ToList()
+                        }
+                    ));
+                    writer.WriteLine(contents);
+                }
             }
-        }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
+}
 
         public void SaveOutputList()   
         {
-            using (var writer = new StreamWriter("OutputList.json"))
-            {
-                var contents = DynamicJson.Parse(DynamicJson.Serialize(
-                    Output.Save().Select(x =>  new OutputList.JsonOptional(x) ).ToList()
-                ));
-                writer.WriteLine(contents);
+            try
+            { 
+                using (var writer = new StreamWriter("OutputList.json"))
+                {
+                    var contents = DynamicJson.Parse(DynamicJson.Serialize(
+                        Output.Save().Select(x =>  new OutputList.JsonOptional(x) ).ToList()
+                    ));
+                    writer.WriteLine(contents);
+                }
             }
-        }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
+}
 
         public void LoadOutputList()
         {
-            using (var reader = new StreamReader("OutputList.json"))
+            try
+            { 
+                using (var reader = new StreamReader("OutputList.json"))
+                {
+                    var json = DynamicJson.Parse(reader.ReadToEnd());
+                    Output.Load((object[])json);
+                }
+            }
+            catch (Exception error)
             {
-                var json = DynamicJson.Parse(reader.ReadToEnd());
-                Output.Load((object[])json);
+                MessageBox.Show(error.Message);
             }
         }
 
