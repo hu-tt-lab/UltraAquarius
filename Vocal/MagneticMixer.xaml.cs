@@ -35,7 +35,7 @@ namespace Vocal
         public class Magnetic
         {
             public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Pulse;
-            public double Voltage { get; set; } = 1;
+            public double Voltage { get; set; } = 1.0;
             public double Duration { get; set; } = 500;
             public double RaiseDuration { get; set; } = 50.1;
             public double FallDuration { get; set; } = 50.1;

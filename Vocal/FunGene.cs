@@ -120,11 +120,12 @@ namespace Vocal
                 {
                     case MagneticWaveform.Pulse:
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe PULSe");
-                        DMM.WriteString(":SOURce1:PULSe:PERiod " + parameter.Duration + parameter.Interval + "us");
-                        DMM.WriteString(":SOURce1:PULSe:WIDTh " + parameter.Duration + "us");
-                        DMM.WriteString(":SOURce1:PULSe:TRANsition:LEADing " + parameter.RaiseDuration + "us");
-                        DMM.WriteString(":SOURce1:PULSe:TRANsition:TRAiling" + parameter.FallDuration + "us");
-                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                        DMM.WriteString(":SOURce1:PULSe:PERiod " + (parameter.Duration + parameter.Interval) / 1000000 + "S");
+                        DMM.WriteString(":SOURce1:PULSe:WIDTh " + parameter.Duration / 1000000 + "S");
+                        DMM.WriteString(":SOURce1:PULSe:TRANsition:LEADing " + parameter.RaiseDuration / 1000000 + "S");
+                        DMM.WriteString(":SOURce1:PULSe:TRANsition:TRAiling " + parameter.FallDuration / 1000000 + "S");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet " + Math.Round(parameter.Voltage / 2, 3).ToString() + "V");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + "VPP");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
                         DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                         DMM.WriteString(":OUTPut1:POLarity PULSe, NORMal");
@@ -132,8 +133,9 @@ namespace Vocal
                         break;
                     case MagneticWaveform.Square:
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
-                        DMM.WriteString(":SOURce1:PULSe:PERiod " + parameter.Duration + parameter.Interval + "us");
-                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                        DMM.WriteString(":SOURce1:PULSe:PERiod " + (parameter.Duration + parameter.Interval)/1000000 + "S");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPK");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet 0.0V");
                         DMM.WriteString(":SOURce1:FUNCtion:SQUare:DCYCle " + Math.Round(parameter.Duration/(parameter.Duration + parameter.Interval)*100,4) + "PCT");
                         DMM.WriteString(":SOURce1:PHASe:ADJust -0.001DEG");
                         //In relation to the phase
@@ -146,6 +148,31 @@ namespace Vocal
                         break;
                     default: throw new InvalidOperationException();
                 }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
+        }
+
+        public void Parameter(USMod parameter)
+        {
+            try
+            {
+                DMM.WriteString(":SOURce1:AM:SOURce EXTernal");
+                DMM.WriteString(":SOURce1:FUNCtion:SHAPe SIN");
+                DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
+                //DMM.WriteString(":SOURce1:AM:INTernal:FUNCtion:SHAPe SIN");
+                //DMM.WriteString(":SOURce1:AM:INTernal:FREQuency " + parameter.Frequency + "HZ");
+                if (parameter.Voltage > 1.0)
+                {
+                    throw new ArgumentException("Over Applied Max Voltage !");
+                }
+                DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                DMM.WriteString(":SOURce1:AM:DEPTh 100.0PCT");
+                DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
+                DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
             }
             catch (Exception error)
             {
@@ -230,6 +257,9 @@ namespace Vocal
                             case "TRIGGER":
                                 DMM.WriteString(":SOURce:BURSt:STATe ON");
                                 DMM.WriteString(":SOURce1:BURSt:MODE TRIG");
+                                break;
+                            case "AM":
+                                DMM.WriteString(":SOURce1:AM:STATe ON");
                                 break;
                             default: throw new InvalidOperationException();
                         }
