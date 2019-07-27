@@ -295,7 +295,10 @@ namespace Vocal
                                 {
                                     return new { number = variable.Number, name = variable.Name, voltage = linerwindow.Voltage, frequency = linerwindow.Frequency, waves = linerwindow.Waves, windowwaves = linerwindow.WindowWaves, type = variable.Type.ToString(), windowtype = linerwindow.WindowType.ToString() };
                                 }
-
+                                else
+                                {
+                                    throw new ArgumentException("this param is invalid.");
+                                }
                             }
                             else if (variable.Type == SignalType.Magnetic)
                             {

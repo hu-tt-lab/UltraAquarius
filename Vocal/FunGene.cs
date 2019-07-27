@@ -119,6 +119,7 @@ namespace Vocal
                 switch (parameter.Waveform)
                 {
                     case MagneticWaveform.Pulse:
+                        OnOff("OFF");
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe PULSe");
                         DMM.WriteString(":SOURce1:PULSe:PERiod " + (parameter.Duration + parameter.Interval) / 1000000 + "S");
                         DMM.WriteString(":SOURce1:PULSe:WIDTh " + parameter.Duration / 1000000 + "S");
@@ -131,8 +132,10 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                         DMM.WriteString(":OUTPut1:POLarity PULSe, NORMal");
                         DMM.WriteString(":OUTPut1:SCALe PULSe, FS");
+                        OnOff("ON");
                         break;
                     case MagneticWaveform.Square:
+                        OnOff("OFF");
                         DMM.WriteString(":SOURce1:FUNCtion:SHAPe SQUare");
                         DMM.WriteString(":SOURce1:PULSe:PERiod " + (parameter.Duration + parameter.Interval)/1000000 + "S");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPK");
@@ -147,6 +150,7 @@ namespace Vocal
                         DMM.WriteString(":OUTPut1:POLarity SQUare, NOrmal");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
                         DMM.WriteString(":OUTPut1:SCALe SQUare, PFS");
+                        OnOff("ON");
                         break;
                     default: throw new InvalidOperationException();
                 }
