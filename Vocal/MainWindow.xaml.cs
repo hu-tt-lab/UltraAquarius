@@ -283,6 +283,20 @@ namespace Vocal
                                 var signal = variable.Signal as UltrasoundWave;
                                 return new { number = variable.Number, name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves, duty = signal.Duty, prf = signal.PRF, pulses = signal.Triggered, type = variable.Type.ToString() };
                             }
+                            else if (variable.Type == SignalType.USMod)
+                            {
+                                var sinewindow = variable.Signal as WindowSine;
+                                if(sinewindow != null)
+                                {
+                                    return new { number = variable.Number, name = variable.Name, voltage = sinewindow.Voltage, frequency = sinewindow.Frequency, waves = sinewindow.Waves, windowwaves = sinewindow.WindowWaves, type = variable.Type.ToString(), windowtype = sinewindow.WindowType.ToString()};
+                                }
+                                var linerwindow = variable.Signal as WindowLiner;
+                                if (linerwindow != null)
+                                {
+                                    return new { number = variable.Number, name = variable.Name, voltage = linerwindow.Voltage, frequency = linerwindow.Frequency, waves = linerwindow.Waves, windowwaves = linerwindow.WindowWaves, type = variable.Type.ToString(), windowtype = linerwindow.WindowType.ToString() };
+                                }
+
+                            }
                             else if (variable.Type == SignalType.Magnetic)
                             {
                                 var magpulse = variable.Signal as MagneticWave;
