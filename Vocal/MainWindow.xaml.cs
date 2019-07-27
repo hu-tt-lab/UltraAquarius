@@ -167,6 +167,13 @@ namespace Vocal
                     Fungene.BurstSyncType("BURSTSYNC");
                     Fungene.OnOff("ON");
                 }
+                else if (signals.Any(x => x.Type == SignalType.USMod))
+                {
+                    var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                    Fungene.Open(name.Resource);
+                    Fungene.OnOff("OFF");
+                    Fungene.Oscillation("AM");
+                }
 
                 // create device buffer
                 using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ExDeviceChannel2, Configure.ALLTriggerChannel))
@@ -214,8 +221,9 @@ namespace Vocal
                             }
                             else if (signal.Type == SignalType.USMod)
                             {
-                                //Fungene.Parameter(Mixer.USMod.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                Fungene.Parameter(Mixer.USMod.Find(signal.Name));
+                                Fungene.OnOff("ON");
+                                device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave,  trigger.Wave);
                             }
                             else if(signal.Type == SignalType.Magnetic)
                             {

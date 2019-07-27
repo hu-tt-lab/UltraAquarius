@@ -566,12 +566,12 @@ namespace Vocal
         {
             get
             {
-                var windowLength_ = 0.25 * WindowWaves / Frequency * SamplingRate;
+                var windowLength_ = WindowWaves / Frequency * SamplingRate;
                 for (var i = 0; i < Size; ++i)
                 {
                     if (i <= windowLength_)
                     {
-                        yield return Level * Math.Sin(Frequency/WindowWaves * 2 * Math.PI * i/SamplingRate);
+                        yield return Level * Math.Sin(0.25 * Frequency/WindowWaves * 2 * Math.PI * i/SamplingRate);
                     }
                     else if(windowLength_ < i & i < Size - windowLength_) 
                     {
@@ -579,7 +579,7 @@ namespace Vocal
                     }
                     else
                     {
-                        yield return Level * Math.Sin(Frequency / WindowWaves * 2 * Math.PI * (Size - i) / SamplingRate);
+                        yield return Level * Math.Sin(0.25 * Frequency / WindowWaves * 2 * Math.PI * (Size - i) / SamplingRate);
                     }
                     
 
@@ -613,7 +613,7 @@ namespace Vocal
         {
             get
             {
-                var windowLength_ = 0.25 * WindowWaves / Frequency * SamplingRate;
+                var windowLength_ = WindowWaves / Frequency * SamplingRate;
                 for (var i = 0; i < Size; ++i)
                 {
                     if (i <= windowLength_)
