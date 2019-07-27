@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Codeplex.Data;
 
 namespace Vocal
 {
@@ -39,7 +40,7 @@ namespace Vocal
             public bool Valid { get; set; } = true;
             public string Variable { get; set; }
             public SignalType Type { get; set; }
-            public string Number { get; set; }
+            public string Number { get; set; } = "1";
             public Optional(Optional rhs)
             {
                 Valid = rhs.Valid;
@@ -58,6 +59,20 @@ namespace Vocal
             public Optional() { }
         }
 
+        public class JsonOptional
+        {
+            public bool Valid { get; set; } = true;
+            public string Variable { get; set; }
+            public string Type { get; set; }
+            public string Number { get; set; } = "1";
+            public JsonOptional(Optional rhs)
+            {
+                Valid = rhs.Valid;
+                Variable = rhs.Variable;
+                Type = rhs.Type.ToString();
+                Number = rhs.Number;
+            }
+        }
         public OutputList()
         {
             InitializeComponent();
@@ -94,6 +109,26 @@ namespace Vocal
             }
         }
 
+        public List<Optional> Save()
+        {
+            return Rows.ToList();
+        }
+        public void Load(object[] rhs)
+        {
+            Rows.Clear();
+            foreach (var i in rhs)
+            {
+                var json = DynamicJson.Parse(i.ToString());
+                var tmp = new Optional();
+
+                tmp.Valid = (bool)json.Valid;
+                tmp.Variable = json.Variable;
+                tmp.Type = (SignalType)Enum.Parse(typeof(SignalType), json.Type, true);
+                tmp.Number = json.Number;
+                Rows.Add(tmp);
+            }
+
+        }
         /// <summary>
         /// Add row to end
         /// </summary>

@@ -350,10 +350,7 @@ namespace Vocal
             }
 
         }
-        private void OnMixerLoad(object sender, RoutedEventArgs e)
-        {
-            LoadMixer();
-        }
+
         public void SaveMixer()
         {
             using (var writer = new StreamWriter("Mixer.json"))
@@ -369,13 +366,46 @@ namespace Vocal
                         USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal)}).ToList()
                     }
                 ));
-                //変換用のClassとコンストラクタ作って相互に変換することにします，enumツラミ
                 writer.WriteLine(contents);
             }
         }
+
+        public void SaveOutputList()   
+        {
+            using (var writer = new StreamWriter("OutputList.json"))
+            {
+                var contents = DynamicJson.Parse(DynamicJson.Serialize(
+                    Output.Save().Select(x =>  new OutputList.JsonOptional(x) ).ToList()
+                ));
+                writer.WriteLine(contents);
+            }
+        }
+
+        public void LoadOutputList()
+        {
+            using (var reader = new StreamReader("OutputList.json"))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Output.Load((object[])json);
+            }
+        }
+
         private void OnMixerSave(object sender, RoutedEventArgs e)
         {
             SaveMixer();
+        }
+        private void OnMixerLoad(object sender, RoutedEventArgs e)
+        {
+            LoadMixer();
+        }
+
+        private void OnOutputListSave(object sender, RoutedEventArgs e)
+        {
+            SaveOutputList();
+        }
+        private void OnOutputListLoad(object sender, RoutedEventArgs e)
+        {
+            LoadOutputList();
         }
     }
 }
