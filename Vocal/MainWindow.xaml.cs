@@ -304,7 +304,7 @@ namespace Vocal
                                 var magpulse = variable.Signal as MagneticWave;
                                 if (magpulse != null)
                                 {
-                                    return new { number = variable.Number, name = variable.Name, voltage = magpulse.Voltage, duration = (magpulse.Duration / magpulse.Waves - magpulse.Interval), raisedur = magpulse.RaiseDuration, falldur = magpulse.FallDuration, interval = magpulse.Interval, waves = magpulse.Waves, type = variable.Type.ToString(), signaltype = magpulse.Waveform };
+                                    return new { number = variable.Number, name = variable.Name, voltage = magpulse.Voltage, duration = (magpulse.Duration / magpulse.Waves - magpulse.Interval), raisedur = magpulse.RaiseDuration, falldur = magpulse.FallDuration, interval = magpulse.Interval, waves = magpulse.Waves, type = variable.Type.ToString(), signaltype = magpulse.Waveform.ToString() };
                                 }
                                 /*
                                 var frontsaw = variable.Signal as FrontEdgeSawPulse;
