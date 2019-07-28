@@ -29,7 +29,8 @@ namespace Vocal
         //LastEdgeSawPulse,
         //TrianglePulse,
             Pulse,
-            Square
+            Square,
+            Sine
         }
 
         public class Magnetic
@@ -37,6 +38,7 @@ namespace Vocal
             public MagneticWaveform Waveform { get; set; } = MagneticWaveform.Pulse;
             public double Voltage { get; set; } = 1.0;
             public double Duration { get; set; } = 500;
+            public double Frequency { get; set; } = 1000;
             public double RaiseDuration { get; set; } = 50.1;
             public double FallDuration { get; set; } = 50.1;
             public double Interval { get; set; } = 10;
@@ -49,6 +51,7 @@ namespace Vocal
                 Waveform = (MagneticWaveform)Enum.Parse(typeof(MagneticWaveform), rhs.Waveform, true);
                 Voltage = rhs.Voltage;
                 Duration = rhs.Duration;
+                Frequency = rhs.Frequency;
                 RaiseDuration = rhs.RaiseDuration;
                 FallDuration = rhs.FallDuration;
                 Interval = rhs.Interval;
@@ -64,6 +67,7 @@ namespace Vocal
             public string Waveform { get; set; } = "Pulse";
             public double Voltage { get; set; } = 1;
             public double Duration { get; set; } = 500;
+            public double Frequency { get; set; } = 1000;
             public double RaiseDuration { get; set; } = 50.1;
             public double FallDuration { get; set; } = 50.1;
             public double Interval { get; set; } = 10;
@@ -74,6 +78,7 @@ namespace Vocal
                 Waveform = rhs.Waveform.ToString();
                 Voltage = rhs.Voltage;
                 Duration = rhs.Duration;
+                Frequency = rhs.Frequency;
                 RaiseDuration = rhs.RaiseDuration;
                 FallDuration = rhs.FallDuration;
                 Interval = rhs.Interval;
@@ -139,6 +144,7 @@ namespace Vocal
                     tmp.Waveform = (MagneticWaveform)Enum.Parse(typeof(MagneticWaveform), json.Signal.Waveform, true);
                     tmp.Voltage = (double)json.Signal.Voltage;
                     tmp.Duration = (double)json.Signal.Duration;
+                    tmp.Frequency = (double)json.Signal.Frequency;
                     tmp.RaiseDuration = (double)json.Signal.RaiseDuration;
                     tmp.FallDuration = (double)json.Signal.FallDuration;
                     tmp.Interval = (double)json.Signal.Interval;

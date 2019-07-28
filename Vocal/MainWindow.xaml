@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control" Height="620" Width="1200" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
+        Title="Vocal Control" Height="620" Width="1240" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
     <Grid>
-        <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,894,16" />
-        <local:SoundMixer x:Name="Mixer" Margin="295,35,360,0" Height="540"  Width="540" VerticalAlignment="Top"/>
-        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="825,232,0,0" VerticalAlignment="Top" Width="353">
+        <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,924,16" />
+        <local:SoundMixer x:Name="Mixer" Margin="290,35,350,0" Height="540"  Width="580" VerticalAlignment="Top"/>
+        <GroupBox Header="User Control" HorizontalAlignment="Left" Height="336" Margin="870,232,10,0" VerticalAlignment="Top" Width="353">
             <Grid>
                 <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="15" Margin="10,39,0,0" VerticalAlignment="Top" Width="280"/>
                 <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" Width="75" Click="OnStartClick"/>
@@ -18,7 +18,7 @@
             </Grid>
         </GroupBox>
 
-        <TabControl x:Name="Option" HorizontalAlignment="Left" Height="198" Margin="825,35,0,0" VerticalAlignment="Top" Width="347" >
+        <TabControl x:Name="Option" Height="198" Margin="870,35,10,0" VerticalAlignment="Top" >
             <TabItem Header="Trial">
                 <Grid Background="#FFE5E5E5">
                     <local:IntervalControl x:Name="Interval"/>
@@ -71,7 +71,7 @@
                 <MenuItem Header="USMod" />
                 <MenuItem Header="Magnetic" />
                 <MenuItem Header="User Defined" />
-            </MenuItem> 
+            </MenuItem>
         </Menu>
     </Grid>
 </Window>

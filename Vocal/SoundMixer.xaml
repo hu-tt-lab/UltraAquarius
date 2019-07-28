@@ -35,7 +35,7 @@
             </TabItem>
             <TabItem Header="Magnetic">
                 <Grid Background="#FFE5E5E5">
-                    <local:MagneticMixer  x:Name="Magnetic" HorizontalAlignment="Left" Height="500"  Width="510" VerticalAlignment="Top"/>
+                    <local:MagneticMixer  x:Name="Magnetic" HorizontalAlignment="Left" Height="500"  Width="550" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="User Defined">

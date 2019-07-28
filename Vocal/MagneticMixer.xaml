@@ -20,6 +20,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Sig Name" Binding="{Binding Name}"/>
                 <DataGridComboBoxColumn Header="Waveform" SelectedItemBinding="{Binding Signal.Waveform}" ItemsSource="{Binding Source={StaticResource Waveform}}"/>
+                <DataGridTextColumn Header="Freq[Hz]" Binding="{Binding Signal.Frequency}"/>
                 <DataGridTextColumn Header="Voltage[V]" Binding="{Binding Signal.Voltage}"/>
                 <DataGridTextColumn Header="Duration[us]" Binding="{Binding Signal.Duration}"/>
                 <DataGridTextColumn Header="Interval[us]" Binding="{Binding Signal.Interval}"/>

@@ -89,6 +89,7 @@ namespace Vocal
                         }
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet 0.0V");
                         DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                         DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
                         DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
@@ -99,6 +100,7 @@ namespace Vocal
                         DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
                         DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet 0.0V");
                         DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
                         DMM.WriteString(":OUTPut1:POLarity SQUare, NORMal");
                         DMM.WriteString(":OUTPut1:SCALe SQUare, FS");
@@ -150,6 +152,18 @@ namespace Vocal
                         DMM.WriteString(":OUTPut1:POLarity SQUare, NOrmal");
                         DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
                         DMM.WriteString(":OUTPut1:SCALe SQUare, PFS");
+                        OnOff("ON");
+                        break;
+                    case MagneticWaveform.Sine:
+                        OnOff("OFF");
+                        DMM.WriteString(":SOURce1:FUNCtion:SHAPe SIN");
+                        DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                        DMM.WriteString(":SOURce1:BURSt:TRIGger:NCYCles " + parameter.Waves);
+                        DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:OFFSet 0.0V");
+                        DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                        DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
+                        DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
                         OnOff("ON");
                         break;
                     default: throw new InvalidOperationException();
