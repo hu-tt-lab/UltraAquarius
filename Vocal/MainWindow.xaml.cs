@@ -340,7 +340,9 @@ namespace Vocal
                         }).ToList()).ToList().SelectMany(x=>x));
                         writer.WriteLine(contents);
                     }
+                    device.Dispose();
                 }
+
             }
             catch (TaskCanceledException)
             {
