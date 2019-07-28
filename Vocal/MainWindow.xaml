@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control" Height="620" Width="1200" ResizeMode="CanMinimize">
+        Title="Vocal Control" Height="620" Width="1200" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
     <Grid>
         <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,894,16" />
         <local:SoundMixer x:Name="Mixer" Margin="295,35,360,0" Height="540"  Width="540" VerticalAlignment="Top"/>
