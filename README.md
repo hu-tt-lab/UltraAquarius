@@ -77,9 +77,11 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 
 * Function Generatorを使用したい場合にアプリにFunction Generatorの識別子を認識させるために使用する．
 
+
 1. Get FunGene IDを押す
 2. ComboBoxから使用したいFunction GeneratorのIdentiferを選択する
 3. FunGeneIDの下部Function Generatorの名称が出てくれば認識が完了している
+
 
 ### PureTone
 
@@ -87,7 +89,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Decibel[dB]: 刺激音圧
 * Frequency[Hz]: 正弦波の周波数
 * Duration[ms]: 刺激波形の長さ
-  
+
+
 #### Pure
 
 * 窓なしの正弦波
