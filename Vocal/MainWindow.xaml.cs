@@ -399,18 +399,19 @@ namespace Vocal
         {
             try
             {
-                System.Windows.Forms.OpenFileDialog openDialog = new System.Windows.Forms.OpenFileDialog
+                System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog
                 {
                     Title = "名前を指定して保存",
                     InitialDirectory = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'),
                     FileName = @"Mixer.json",
                     Filter = "jsonファイル(*.json)|*.json|すべてのファイル(*.*)|*.*",
-                    FilterIndex = 1
+                    FilterIndex = 1,
+                    CheckFileExists = false
 
                 };
-                if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var writer = new StreamWriter(openDialog.FileName))
+                    using (var writer = new StreamWriter(saveDialog.FileName))
                     {
                         var contents = DynamicJson.Parse(DynamicJson.Serialize(
                             new
@@ -437,18 +438,19 @@ namespace Vocal
         {
             try
             {
-                System.Windows.Forms.OpenFileDialog openDialog = new System.Windows.Forms.OpenFileDialog
+                System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog
                 {
                     Title = "名前を指定して保存",
                     InitialDirectory = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'),
                     FileName = @"OutputList.json",
                     Filter = "jsonファイル(*.json)|*.json|すべてのファイル(*.*)|*.*",
-                    FilterIndex = 1
+                    FilterIndex = 1,
+                    CheckFileExists = false
 
                 };
-                if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var writer = new StreamWriter(openDialog.FileName))
+                    using (var writer = new StreamWriter(saveDialog.FileName))
                     {
                         var contents = DynamicJson.Parse(DynamicJson.Serialize(
                             Output.Save().Select(x => new OutputList.JsonOptional(x)).ToList()
