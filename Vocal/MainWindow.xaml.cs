@@ -510,5 +510,10 @@ namespace Vocal
         {
             LoadOutputList();
         }
+
+        private void OnHelp(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/blob/master/README.md");
+        }
     }
 }

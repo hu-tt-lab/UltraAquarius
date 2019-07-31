@@ -62,15 +62,7 @@
                 <MenuItem Header="刺激オーダーを読み込みする(_q)" Click="OnOutputListLoad"/>
                 <MenuItem Header="終了" />
             </MenuItem>
-            <MenuItem Header="ヘルプ(_H)">
-                <MenuItem Header="全般" />
-                <MenuItem Header="Pure Tone" />
-                <MenuItem Header="Click Tone" />
-                <MenuItem Header="AM Tone" />
-                <MenuItem Header="Ultrasound" />
-                <MenuItem Header="USMod" />
-                <MenuItem Header="Magnetic" />
-                <MenuItem Header="User Defined" />
+            <MenuItem Header="ヘルプ(_H)" Click="OnHelp">
             </MenuItem>
         </Menu>
     </Grid>
