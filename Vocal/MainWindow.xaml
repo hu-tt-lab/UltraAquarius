@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control" Height="620" Width="1240" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
+        Title="Vocal Control ver.3.0.0" Height="620" Width="1240" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
     <Grid>
         <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,924,16" />
         <local:SoundMixer x:Name="Mixer" Margin="290,35,350,0" Height="540"  Width="580" VerticalAlignment="Top"/>
@@ -58,8 +58,10 @@
             <MenuItem Header="ファイル(_F)" RenderTransformOrigin="0.525,0.722" Height="25">
                 <MenuItem Header="刺激パラメータを保存する(_s)" Click="OnMixerSave"/>
                 <MenuItem Header="刺激パラメータを読み込みする(_r)" Click="OnMixerLoad"/>
+                <Separator/>
                 <MenuItem Header="刺激オーダーを保存する(_o)" Click="OnOutputListSave" />
                 <MenuItem Header="刺激オーダーを読み込みする(_q)" Click="OnOutputListLoad"/>
+                <Separator/>
                 <MenuItem Header="終了" />
             </MenuItem>
             <MenuItem Header="ヘルプ(_H)" Click="OnHelp">
