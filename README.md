@@ -90,6 +90,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Frequency[Hz]: 正弦波の周波数
 * Duration[ms]: 刺激波形の長さ
 
+![PureTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799839XBhJ16Ra1j)
 
 #### Pure
 
@@ -110,6 +111,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Decibel[dB]: 刺激音圧
 * Duration[ms]: 刺激波形の長さ
 
+![Click](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799917MVmRTKZJhn)
+
 #### Click
 
 * Pulse波形
@@ -120,6 +123,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Frequency[Hz]: 輸送波の周波数
 * Modulation[Hz]: 変調波の周波数
 * Duration[ms]: 刺激波形の長さ
+
+![AMTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799902W27z1lyVa2)
 
 #### AM
 
@@ -135,6 +140,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * PRF[Hz]: PulseRepeatFrequencyの略, Burstの繰り返し頻度
 * Pulses: Burstの数
 
+![Ultrasound](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799792Zhu8aTArKk)
+
 #### Burst波(Sin, Square)
 
 * 一定波数の刺激をPRFの周波数でBurst状に照射する
@@ -146,6 +153,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Frequency[Hz]: 出力波形の周波数
 * Waves: Burst一つに含まれる波の数
 * WindowWaves: 窓の長さを波数(周期)で指定する
+
+![USMod](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799886ETdGmRuemd)
 
 #### 窓付き連続波
 
@@ -162,6 +171,8 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Raise[us] (`Pulse Only`): 刺激の立ち上がり時間
 * Fall[us] (`Pulse Only`): 刺激の立ち下がり時間
 * Waves: 刺激波形の数
+
+![Magnetic](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799949YooypVvIBc)
 
 #### Sine
 
