@@ -90,7 +90,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Frequency[Hz]: 正弦波の周波数
 * Duration[ms]: 刺激波形の長さ
 
-![PureTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799839XBhJ16Ra1j)
+![PureTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1565072296807FjYQr14RM1)
 
 #### Pure
 
@@ -111,7 +111,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Decibel[dB]: 刺激音圧
 * Duration[ms]: 刺激波形の長さ
 
-![Click](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799917MVmRTKZJhn)
+![Click](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/15650723130518zMGlqevdJ)
 
 #### Click
 
@@ -124,7 +124,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Modulation[Hz]: 変調波の周波数
 * Duration[ms]: 刺激波形の長さ
 
-![AMTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799902W27z1lyVa2)
+![AMTone](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1565072333037EF5R5AP5M4)
 
 #### AM
 
@@ -140,7 +140,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * PRF[Hz]: PulseRepeatFrequencyの略, Burstの繰り返し頻度
 * Pulses: Burstの数
 
-![Ultrasound](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799792Zhu8aTArKk)
+![Ultrasound](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1565072346842FsLlhzNHnO)
 
 #### Burst波(Sin, Square)
 
@@ -154,7 +154,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Waves: Burst一つに含まれる波の数
 * WindowWaves: 窓の長さを波数(周期)で指定する
 
-![USMod](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799886ETdGmRuemd)
+![USMod](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1565072354945ekIFmtze17)
 
 #### 窓付き連続波
 
@@ -172,7 +172,7 @@ NIDAQとFunction Generator(WF1947)から音・超音波・磁気刺激用の波�
 * Fall[us] (`Pulse Only`): 刺激の立ち下がり時間
 * Waves: 刺激波形の数
 
-![Magnetic](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1564661799949YooypVvIBc)
+![Magnetic](https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/_attached/1565072364952ijbHQGYyUi)
 
 #### Sine
 
