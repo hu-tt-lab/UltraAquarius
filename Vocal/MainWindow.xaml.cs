@@ -216,16 +216,21 @@ namespace Vocal
                             //Digital Trigger, Sound channel, ExDevice channel,ExDevice channel2, All Trigger channel
                             if (signal.Type == SignalType.Ultrasound)
                             {
+                                Fungene.Oscillation("TRIGGER");
+                                Fungene.BurstSyncType("BURSTSYNC");
                                 Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
                                 device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
                             }
                             else if (signal.Type == SignalType.USMod)
                             {
+                                Fungene.Oscillation("AMSC");
                                 Fungene.Parameter(Mixer.USMod.Find(signal.Name));
                                 device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave,  trigger.Wave);
                             }
                             else if(signal.Type == SignalType.Magnetic)
                             {
+                                Fungene.Oscillation("TRIGGER");
+                                Fungene.BurstSyncType("BURSTSYNC");
                                 Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
                                 device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
                             }
