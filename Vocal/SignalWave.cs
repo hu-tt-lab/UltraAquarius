@@ -233,24 +233,17 @@ namespace Vocal
         {
             get
             {
+                var piriod = SamplingRate / PRF;
                 for (var i = 0; i < Size; ++i)
                 {
-                    if (i * Frequency / SamplingRate > Triggered)
-                    {
-                        yield return 0;
-                    }
-                    else
-                    {
-                        if (Math.Cos(i * Frequency * 2 * Math.PI / SamplingRate - Math.PI / 4) > Math.Cos(Math.PI / 4))
+                        if ((i % piriod) < (piriod / 4))
                         {
                             yield return Level;
                         }
                         else
                         {
                             yield return 0;
-                        }
-                    }
-                    
+                        }                   
                 }
             }
         }
