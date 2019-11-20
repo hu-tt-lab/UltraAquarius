@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vocal"
         mc:Ignorable="d"
-        Title="Vocal Control ver.3.0.1" Height="620" Width="1240" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
+        Title="Vocal Control ver.3.1.0" Height="620" Width="1240" ResizeMode="CanMinimize" FontFamily="Yu Gothic UI">
     <Grid>
         <local:OutputList x:Name="Output" Height="540" Width="300" Margin="0,35,924,16" />
         <local:SoundMixer x:Name="Mixer" Margin="290,35,350,0" Height="540"  Width="580" VerticalAlignment="Top"/>
@@ -21,16 +21,21 @@
         <TabControl x:Name="Option" Height="198" Margin="870,35,10,0" VerticalAlignment="Top" >
             <TabItem Header="Trial">
                 <Grid Background="#FFE5E5E5">
-                    <local:IntervalControl x:Name="Interval"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="53*"/>
+                        <ColumnDefinition Width="296*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:IntervalControl x:Name="Interval" Grid.ColumnSpan="2"/>
 
-                    <Label Content="Trial Count" HorizontalAlignment="Left" Margin="175,10,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="trialCount" HorizontalAlignment="Left" Height="23" Margin="175,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="20"/>
+                    <Label Content="Trial Count" HorizontalAlignment="Left" Margin="118,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <TextBox x:Name="trialCount" HorizontalAlignment="Left" Height="23" Margin="119,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155" Text="20" Grid.Column="1"/>
 
-                    <Label Content="Random" HorizontalAlignment="Left" Margin="175,103,0,0" VerticalAlignment="Top"/>
-                    <ComboBox x:Name="Random" HorizontalAlignment="Left" Margin="175,129,0,0" VerticalAlignment="Top" Width="139" SelectedIndex="0">
+                    <Label Content="Random" HorizontalAlignment="Left" Margin="118,103,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <ComboBox x:Name="Random" HorizontalAlignment="Left" Margin="119,129,0,0" VerticalAlignment="Top" Width="155" SelectedIndex="0" Grid.Column="1">
                         <ComboBoxItem>Not</ComboBoxItem>
-                        <ComboBoxItem>Partial Random</ComboBoxItem>
-                        <ComboBoxItem>Full Random</ComboBoxItem>
+                        <ComboBoxItem>Partial Random(Micam)</ComboBoxItem>
+                        <ComboBoxItem>Full Random(Omniplex)</ComboBoxItem>
+                        <ComboBoxItem>ABR Mode(TDT)</ComboBoxItem>
                     </ComboBox>
 
                 </Grid>
