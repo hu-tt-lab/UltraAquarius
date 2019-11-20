@@ -217,7 +217,9 @@ namespace Vocal
                             }
                             // TDT needs two triggers to expel data
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                            await Task.Delay(Interval.Interval, Cancellation.Token);
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                            await Task.Delay(Interval.Interval, Cancellation.Token);
                         }
 
                         // log to json
