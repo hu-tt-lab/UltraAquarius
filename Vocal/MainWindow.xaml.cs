@@ -213,7 +213,7 @@ namespace Vocal
                                 .WriteLine("Type: {0:g}", signal.Type)
                                 .Return()
                                 .End();
-                            //Digital Trigger, Sound channel, ExDevice channel,ExDevice channel2, All Trigger channel
+                            //device.output's argument is (Digital Trigger, Sound channel, ExDevice channel,ExDevice channel2, All Trigger channel)
                             if (signal.Type == SignalType.Ultrasound)
                             {
                                 Fungene.Oscillation("TRIGGER");
