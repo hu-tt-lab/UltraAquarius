@@ -151,62 +151,18 @@ namespace Vocal
                 var duration = signals.Max(x => x.Signal.Duration);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
-
-                if (signals.Any(x =>x.Type == SignalType.Ultrasound))
+                //ABR Mode
+                if (Random.SelectedIndex == 3) 
                 {
-                    var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
-                    Fungene.Open(name.Resource);
-                    Fungene.Oscillation("TRIGGER");
-                    Fungene.BurstSyncType("BURSTSYNC");
-                    Fungene.OnOff("ON");
-                }
-                else if (signals.Any(x => x.Type == SignalType.Magnetic))
-                {
-                    var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
-                    Fungene.Open(name.Resource);
-                    Fungene.Oscillation("TRIGGER");
-                    Fungene.BurstSyncType("BURSTSYNC");
-                    Fungene.OnOff("OFF");
-                }
-                else if (signals.Any(x => x.Type == SignalType.USMod))
-                {
-                    var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
-                    Fungene.Open(name.Resource);
-                    Fungene.Oscillation("AMSC");
-                    Fungene.OnOff("ON");
-                }
+                    Progress.Maximum = trial* signals.Count();
+                    // create device buffer
+                    using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ExDeviceChannel2, Configure.ALLTriggerChannel))
+                    {//Digital Trigger, Sound channel, ExDevice channel, ExDevice channel2, All Trigger channel
+                        
+                        var table = new List<int>[1];
+                        table[0] = Enumerable.Range(0, signals.Count()).ToList();
 
-                // create device buffer
-                using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ExDeviceChannel2, Configure.ALLTriggerChannel))
-                {//Digital Trigger, Sound channel, ExDevice channel, ExDevice channel2, All Trigger channel
-                    var table = new List<int>[trial];
-                    if (Random.SelectedIndex == 1)
-                    {
-                        var seq = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
-                        for (var i = 0; i < trial; ++i)
-                        {
-                            table[i] = seq;
-                        }
-                    }
-                    else if (Random.SelectedIndex == 2)
-                    {
-                        for (var i = 0; i < trial; ++i)
-                        {
-                            table[i] = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
-                        }
-                    }
-                    else
-                    {
-                        var seq = Enumerable.Range(0, signals.Count()).ToList();
-                        for (var i = 0; i < trial; ++i)
-                        {
-                            table[i] = seq;
-                        }
-                    }
-
-                    for (var i = 0; i < trial; ++i)
-                    {
-                        foreach (var index in table[i])
+                        foreach (var index in table[0])
                         {
                             var signal = signals[index];
                             Console.WriteLine("Output Sound!")
@@ -220,40 +176,177 @@ namespace Vocal
                                 Fungene.Oscillation("TRIGGER");
                                 Fungene.BurstSyncType("BURSTSYNC");
                                 Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                for (var i = 0; i < trial; ++i)
+                                {
+                                    device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                    Progress.Value += 1;
+                                    await Task.Delay(Interval.Interval, Cancellation.Token);
+                                }
                             }
                             else if (signal.Type == SignalType.USMod)
                             {
                                 Fungene.Oscillation("AMSC");
                                 Fungene.Parameter(Mixer.USMod.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave,  trigger.Wave);
+                                for (var i = 0; i < trial; ++i)
+                                {
+                                    device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                    Progress.Value += 1;
+                                    await Task.Delay(Interval.Interval, Cancellation.Token);
+                                }
                             }
-                            else if(signal.Type == SignalType.Magnetic)
+                            else if (signal.Type == SignalType.Magnetic)
                             {
                                 Fungene.Oscillation("TRIGGER");
                                 Fungene.BurstSyncType("BURSTSYNC");
                                 Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
-                                device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                for (var i = 0; i < trial; ++i)
+                                {
+                                    device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                    Progress.Value += 1;
+                                    await Task.Delay(Interval.Interval, Cancellation.Token);
+                                }
                             }
                             else
                             {
-                                device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                                for (var i = 0; i < trial; ++i)
+                                {
+                                    device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                                    Progress.Value += 1;
+                                    await Task.Delay(Interval.Interval, Cancellation.Token);
+                                }
                             }
-                            
-                            await Task.Delay(Interval.Interval, Cancellation.Token);
+                            // TDT needs two triggers to expel data
+                            device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                            device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
                         }
-                        Progress.Value = i + 1;
-                    }
 
-                    // log to json
-                    using (var writer = new StreamWriter(string.Format("{0:g}result.json", DateTime.Now.ToString("yyyyMMdd-HHmm-"))))
-                    {
-                        var contents = MakeJsonData(table, signals);
-                        writer.WriteLine(contents);
+                        // log to json
+                        var nowDate = DateTime.Now.ToString("yyyyMMdd-HHmm-");
+                        using (var writer = new StreamWriter(string.Format("{0:g}result.json", nowDate)))
+                        {
+                            var contents = MakeJsonOrderData(table, signals);
+                            writer.WriteLine(contents);
+                        }
+                        using (var writer = new StreamWriter(string.Format("{0:g}Settings.json", nowDate)))
+                        {
+                            var contents = MakeJsonSettingData();
+                            writer.WriteLine(contents);
+                        }
+                        device.Dispose();
                     }
-                    device.Dispose();
                 }
+                // Ordinary(Plexon,Micam)Mode
+                else
+                {
 
+                    if (signals.Any(x => x.Type == SignalType.Ultrasound))
+                    {
+                        var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                        Fungene.Open(name.Resource);
+                        Fungene.Oscillation("TRIGGER");
+                        Fungene.BurstSyncType("BURSTSYNC");
+                        Fungene.OnOff("ON");
+                    }
+                    else if (signals.Any(x => x.Type == SignalType.Magnetic))
+                    {
+                        var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                        Fungene.Open(name.Resource);
+                        Fungene.Oscillation("TRIGGER");
+                        Fungene.BurstSyncType("BURSTSYNC");
+                        Fungene.OnOff("OFF");
+                    }
+                    else if (signals.Any(x => x.Type == SignalType.USMod))
+                    {
+                        var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                        Fungene.Open(name.Resource);
+                        Fungene.Oscillation("AMSC");
+                        Fungene.OnOff("ON");
+                    }
+
+                    // create device buffer
+                    using (var device = new Device(Configure.Identifer, Configure.SamplingRate, duration, Configure.TriggerChannel, Configure.SoundChannel, Configure.ExDeviceChannel, Configure.ExDeviceChannel2, Configure.ALLTriggerChannel))
+                    {//Digital Trigger, Sound channel, ExDevice channel, ExDevice channel2, All Trigger channel
+                        var table = new List<int>[trial];
+                        if (Random.SelectedIndex == 1)
+                        {
+                            var seq = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
+                            for (var i = 0; i < trial; ++i)
+                            {
+                                table[i] = seq;
+                            }
+                        }
+                        else if (Random.SelectedIndex == 2)
+                        {
+                            for (var i = 0; i < trial; ++i)
+                            {
+                                table[i] = Enumerable.Range(0, signals.Count()).OrderBy(x => Guid.NewGuid()).ToList();
+                            }
+                        }
+                        else
+                        {
+                            var seq = Enumerable.Range(0, signals.Count()).ToList();
+                            for (var i = 0; i < trial; ++i)
+                            {
+                                table[i] = seq;
+                            }
+                        }
+
+                        for (var i = 0; i < trial; ++i)
+                        {
+                            foreach (var index in table[i])
+                            {
+                                var signal = signals[index];
+                                Console.WriteLine("Output Sound!")
+                                    .WriteLine("Name: {0:g}", signal.Name)
+                                    .WriteLine("Type: {0:g}", signal.Type)
+                                    .Return()
+                                    .End();
+                                //device.output's argument is (Digital Trigger, Sound channel, ExDevice channel,ExDevice channel2, All Trigger channel)
+                                if (signal.Type == SignalType.Ultrasound)
+                                {
+                                    Fungene.Oscillation("TRIGGER");
+                                    Fungene.BurstSyncType("BURSTSYNC");
+                                    Fungene.Parameter(Mixer.Ultrasound.Find(signal.Name));
+                                    device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                }
+                                else if (signal.Type == SignalType.USMod)
+                                {
+                                    Fungene.Oscillation("AMSC");
+                                    Fungene.Parameter(Mixer.USMod.Find(signal.Name));
+                                    device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                }
+                                else if (signal.Type == SignalType.Magnetic)
+                                {
+                                    Fungene.Oscillation("TRIGGER");
+                                    Fungene.BurstSyncType("BURSTSYNC");
+                                    Fungene.Parameter(Mixer.Magnetic.Find(signal.Name));
+                                    device.Output(signal.Number, nonuse.Wave, signal.Signal.Wave, nonuse.Wave, trigger.Wave);
+                                }
+                                else
+                                {
+                                    device.Output(signal.Number, signal.Signal.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                                }
+
+                                await Task.Delay(Interval.Interval, Cancellation.Token);
+                            }
+                            Progress.Value = i + 1;
+                        }
+
+                        // log to json
+                        var nowDate = DateTime.Now.ToString("yyyyMMdd-HHmm-");
+                        using (var writer = new StreamWriter(string.Format("{0:g}result.json", nowDate)))
+                        {
+                            var contents = MakeJsonOrderData(table, signals);
+                            writer.WriteLine(contents);
+                        }
+                        using (var writer = new StreamWriter(string.Format("{0:g}Settings.json", nowDate)))
+                        {
+                            var contents = MakeJsonSettingData();
+                            writer.WriteLine(contents);
+                        }
+                        device.Dispose();
+                    }
+                }
             }
             catch (TaskCanceledException)
             {
@@ -428,7 +521,7 @@ namespace Vocal
             System.Diagnostics.Process.Start("https://tt-lab.ist.hokudai.ac.jp/gitbucket/toda/UltraAquarius/blob/master/README.md");
         }
 
-        private dynamic MakeJsonData(List<int>[] table, List<(string Name, int Number, SignalType Type, SignalWave Signal)> signals)
+        private dynamic MakeJsonOrderData(List<int>[] table, List<(string Name, int Number, SignalType Type, SignalWave Signal)> signals)
         {
             return DynamicJson.Serialize(table.Select(x => x.Select(i =>
             {
@@ -526,6 +619,19 @@ namespace Vocal
                     throw new ArgumentException("this type is invalid.");
                 }
             }).ToList()).ToList().SelectMany(x => x));
+        }
+        private dynamic MakeJsonSettingData() {
+
+            return DynamicJson.Serialize(new
+            {
+                Interval = Interval.Duration,
+                Waggle = Interval.Waggle,
+                Samplingrate = Configure.SamplingRate,
+                Trial = Trial,
+                Mode = Random.Text,
+                VocalVersion = this.Title
+            }
+            );
         }
     }
 }
