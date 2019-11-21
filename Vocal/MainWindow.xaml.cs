@@ -162,6 +162,22 @@ namespace Vocal
                         var table = new List<int>[1];
                         table[0] = Enumerable.Range(0, signals.Count()).ToList();
 
+                        if (signals.Any(x => x.Type == SignalType.Ultrasound))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
+                        else if (signals.Any(x => x.Type == SignalType.Magnetic))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
+                        else if (signals.Any(x => x.Type == SignalType.USMod))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
+
                         foreach (var index in table[0])
                         {
                             var signal = signals[index];
@@ -216,10 +232,11 @@ namespace Vocal
                                 }
                             }
                             // TDT needs two triggers to expel data
+                            var waittransfer = TimeSpan.FromMilliseconds(1000);
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
-                            await Task.Delay(Interval.Interval, Cancellation.Token);
+                            await Task.Delay(waittransfer, Cancellation.Token);
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
-                            await Task.Delay(Interval.Interval, Cancellation.Token);
+                            await Task.Delay(waittransfer, Cancellation.Token);
                         }
 
                         // log to json
