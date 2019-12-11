@@ -20,11 +20,14 @@ using System.Runtime.Serialization;
 
 namespace Vocal
 {
+
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const double MIN_DURATION = 0.1; //(0.1 ms)
+
         public enum Mode
         {
             Active,
@@ -148,7 +151,7 @@ namespace Vocal
                     .End();
 
                 var signals = Output.List.Select(x => (Name: x.Name, Number: x.Number, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
-                var duration = signals.Max(x => x.Signal.Duration);
+                var duration = Math.Max(signals.Max(x => x.Signal.Duration),MIN_DURATION);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
                 //ABR Mode
