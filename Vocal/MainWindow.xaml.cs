@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using Codeplex.Data;
 using Ivi.Visa.Interop;
 using System.Runtime.Serialization;
+using System.Net;
 
 namespace Vocal
 {
@@ -27,6 +28,46 @@ namespace Vocal
     public partial class MainWindow : Window
     {
         public const double MIN_DURATION = 0.1; //(0.1 ms)
+
+        public class NoticeSlack
+        {
+            public string WebHookUrl { get; set; }
+            public string Data { get; set; }
+            public string Token { get; }
+            public bool Slack_notification { get;}
+
+            public NoticeSlack()
+            {
+                WebHookUrl = "https://slack.com/api/chat.postMessage";
+                using (var reader = new StreamReader("info.json"))
+                {
+                    var config = DynamicJson.Parse(reader.ReadToEnd());
+                    Slack_notification = System.Convert.ToBoolean(config.notification.slack_notification);
+                    Token = config.notification.token;
+                    Data = DynamicJson.Serialize(new
+                    {
+                        text = config.notification.text,
+                        username = config.notification.username,
+                        channel = config.notification.channel_name
+                    });
+
+                }
+                
+            }
+
+            public void Send()
+            {
+                if (Slack_notification)
+                {
+                    var wc = new WebClient();
+                    wc.Headers.Add(HttpRequestHeader.ContentType, "application/json;charset=UTF-8");
+                    wc.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + Token);
+                    wc.Encoding = Encoding.UTF8;
+                    wc.UploadString(WebHookUrl, Data);
+                }
+
+            }
+        }
 
         public enum Mode
         {
@@ -154,6 +195,9 @@ namespace Vocal
                 var duration = Math.Max(signals.Max(x => x.Signal.Duration),MIN_DURATION);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
+
+                var notice = new NoticeSlack();
+
                 //ABR Mode
                 if (Random.SelectedIndex == 3) 
                 {
@@ -366,6 +410,8 @@ namespace Vocal
                             var contents = MakeJsonSettingData();
                             writer.WriteLine(contents);
                         }
+
+                        notice.Send();
                         device.Dispose();
                     }
                 }
