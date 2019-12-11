@@ -151,6 +151,8 @@ namespace Vocal
                     Interval.Duration = config.interval.duration;
                     Interval.Waggle = config.interval.waggle;
 
+
+
                 }
 
             }
@@ -450,16 +452,7 @@ namespace Vocal
                 };
                 if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var reader = new StreamReader(openDialog.FileName))
-                    {
-                        var json = DynamicJson.Parse(reader.ReadToEnd());
-                        Mixer.PureTone.Load((object[])json.PureTone);
-                        Mixer.ClickTone.Load((object[])json.ClickTone);
-                        Mixer.ModulationTone.Load((object[])json.ModulationTone);
-                        Mixer.Magnetic.Load((object[])json.Magnetic);
-                        Mixer.Ultrasound.Load((object[])json.Ultrasound);
-                        Mixer.USMod.Load((object[])json.USMod);
-                    }
+                    SetMixer(openDialog.FileName);
                 }
             }
             catch (Exception error)
@@ -467,6 +460,21 @@ namespace Vocal
                 MessageBox.Show(error.Message);
             }
         }
+
+        public void SetMixer(string filename)
+        {
+            using (var reader = new StreamReader(filename))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Mixer.PureTone.Load((object[])json.PureTone);
+                Mixer.ClickTone.Load((object[])json.ClickTone);
+                Mixer.ModulationTone.Load((object[])json.ModulationTone);
+                Mixer.Magnetic.Load((object[])json.Magnetic);
+                Mixer.Ultrasound.Load((object[])json.Ultrasound);
+                Mixer.USMod.Load((object[])json.USMod);
+            }
+        }
+
 
         public void SaveMixer()
         {
@@ -553,16 +561,20 @@ namespace Vocal
                 };
                 if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var reader = new StreamReader(openDialog.FileName))
-                    {
-                        var json = DynamicJson.Parse(reader.ReadToEnd());
-                        Output.Load((object[])json);
-                    }
+                    SetOutputList(openDialog.FileName);
                 }
             }
             catch (Exception error)
             {
                 MessageBox.Show(error.Message);
+            }
+        }
+        public void SetOutputList(string filename)
+        {
+            using (var reader = new StreamReader(filename))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Output.Load((object[])json);
             }
         }
 
