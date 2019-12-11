@@ -22,7 +22,7 @@ namespace Vocal
 
     public class PureTone
     {
-        public PureToneType Tone { get; set; } = PureToneType.PureTone;
+        public PureToneType Tone { get; set; } = PureToneType.ToneBurst;
         public double Decibel { get; set; } = 60;
         public double Frequency { get; set; } = 4000;
         public double Duration { get; set; } = 100;
