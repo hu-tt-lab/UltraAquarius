@@ -151,7 +151,15 @@ namespace Vocal
                     Interval.Duration = config.interval.duration;
                     Interval.Waggle = config.interval.waggle;
 
-
+                    if (config.auto_load.init_load_OutputList)
+                    {
+                        SetOutputList(config.auto_load.OutputList_name);
+                    }
+                    if (config.auto_load.init_load_Mixer)
+                    {
+                        SetMixer(config.auto_load.Mixer_name);
+                    }
+                    
 
                 }
 

@@ -2,8 +2,8 @@
   "trial": 10,
   "trigger": 3.5,
   "interval": {
-      "duration": 8000,
-      "waggle": 100
+    "duration": 8000,
+    "waggle": 100
   },
   "device": {
     "identifer": "Dev1",
@@ -15,5 +15,11 @@
     "username": "Vocal Aquarius",
     "channel_name": "stim_notice",
     "token": "xoxp-598571263829-599675425526-842729741042-2c2a6a39598d8952e7bf05d31701f45b"
+  },
+  "auto_load": {
+    "init_load_OutputList": false,
+    "OutputList_name": "OutputList.json",
+    "init_load_Mixer": false,
+    "Mixer_name": "Mixer.json"
   }
 }
