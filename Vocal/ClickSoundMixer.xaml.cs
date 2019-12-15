@@ -12,7 +12,7 @@ namespace Vocal
     public class ClickTone
     {
         public double Decibel { get; set; } = 60;
-        public double Duration { get; set; } = 5;
+        public double Duration { get; set; } = 0.1;
     }
 
     /// <summary>

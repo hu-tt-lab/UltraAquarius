@@ -17,14 +17,58 @@ using System.Windows.Media.Imaging;
 using Codeplex.Data;
 using Ivi.Visa.Interop;
 using System.Runtime.Serialization;
+using System.Net;
 
 namespace Vocal
 {
+
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const double MIN_DURATION = 0.1; //(0.1 ms)
+
+        public class NoticeSlack
+        {
+            public string WebHookUrl { get; set; }
+            public string Data { get; set; }
+            public string Token { get; }
+            public bool Slack_notification { get;}
+
+            public NoticeSlack()
+            {
+                WebHookUrl = "https://slack.com/api/chat.postMessage";
+                using (var reader = new StreamReader("info.json"))
+                {
+                    var config = DynamicJson.Parse(reader.ReadToEnd());
+                    Slack_notification = System.Convert.ToBoolean(config.notification.slack_notification);
+                    Token = config.notification.token;
+                    Data = DynamicJson.Serialize(new
+                    {
+                        text = config.notification.text,
+                        username = config.notification.username,
+                        channel = config.notification.channel_name
+                    });
+
+                }
+                
+            }
+
+            public void Send()
+            {
+                if (Slack_notification)
+                {
+                    var wc = new WebClient();
+                    wc.Headers.Add(HttpRequestHeader.ContentType, "application/json;charset=UTF-8");
+                    wc.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + Token);
+                    wc.Encoding = Encoding.UTF8;
+                    wc.UploadString(WebHookUrl, Data);
+                }
+
+            }
+        }
+
         public enum Mode
         {
             Active,
@@ -107,6 +151,16 @@ namespace Vocal
                     Interval.Duration = config.interval.duration;
                     Interval.Waggle = config.interval.waggle;
 
+                    if (config.auto_load.init_load_OutputList)
+                    {
+                        SetOutputList(config.auto_load.OutputList_name);
+                    }
+                    if (config.auto_load.init_load_Mixer)
+                    {
+                        SetMixer(config.auto_load.Mixer_name);
+                    }
+                    
+
                 }
 
             }
@@ -148,9 +202,12 @@ namespace Vocal
                     .End();
 
                 var signals = Output.List.Select(x => (Name: x.Name, Number: x.Number, Type: x.Type, Signal: Mixer.Get(x.Name, x.Type))).ToList();
-                var duration = signals.Max(x => x.Signal.Duration);
+                var duration = Math.Max(signals.Max(x => x.Signal.Duration),MIN_DURATION);
                 var trigger = new Trigger(TriggerLevel, Configure.SamplingRate, duration);
                 var nonuse = new NonUse(Configure.SamplingRate, duration);
+
+                var notice = new NoticeSlack();
+
                 //ABR Mode
                 if (Random.SelectedIndex == 3) 
                 {
@@ -161,6 +218,22 @@ namespace Vocal
                         
                         var table = new List<int>[1];
                         table[0] = Enumerable.Range(0, signals.Count()).ToList();
+
+                        if (signals.Any(x => x.Type == SignalType.Ultrasound))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
+                        else if (signals.Any(x => x.Type == SignalType.Magnetic))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
+                        else if (signals.Any(x => x.Type == SignalType.USMod))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
 
                         foreach (var index in table[0])
                         {
@@ -216,8 +289,11 @@ namespace Vocal
                                 }
                             }
                             // TDT needs two triggers to expel data
+                            var waittransfer = TimeSpan.FromMilliseconds(1000);
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                            await Task.Delay(waittransfer, Cancellation.Token);
                             device.Output(signal.Number, nonuse.Wave, nonuse.Wave, nonuse.Wave, trigger.Wave);
+                            await Task.Delay(waittransfer, Cancellation.Token);
                         }
 
                         // log to json
@@ -344,6 +420,8 @@ namespace Vocal
                             var contents = MakeJsonSettingData();
                             writer.WriteLine(contents);
                         }
+
+                        notice.Send();
                         device.Dispose();
                     }
                 }
@@ -382,16 +460,7 @@ namespace Vocal
                 };
                 if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var reader = new StreamReader(openDialog.FileName))
-                    {
-                        var json = DynamicJson.Parse(reader.ReadToEnd());
-                        Mixer.PureTone.Load((object[])json.PureTone);
-                        Mixer.ClickTone.Load((object[])json.ClickTone);
-                        Mixer.ModulationTone.Load((object[])json.ModulationTone);
-                        Mixer.Magnetic.Load((object[])json.Magnetic);
-                        Mixer.Ultrasound.Load((object[])json.Ultrasound);
-                        Mixer.USMod.Load((object[])json.USMod);
-                    }
+                    SetMixer(openDialog.FileName);
                 }
             }
             catch (Exception error)
@@ -399,6 +468,21 @@ namespace Vocal
                 MessageBox.Show(error.Message);
             }
         }
+
+        public void SetMixer(string filename)
+        {
+            using (var reader = new StreamReader(filename))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Mixer.PureTone.Load((object[])json.PureTone);
+                Mixer.ClickTone.Load((object[])json.ClickTone);
+                Mixer.ModulationTone.Load((object[])json.ModulationTone);
+                Mixer.Magnetic.Load((object[])json.Magnetic);
+                Mixer.Ultrasound.Load((object[])json.Ultrasound);
+                Mixer.USMod.Load((object[])json.USMod);
+            }
+        }
+
 
         public void SaveMixer()
         {
@@ -485,16 +569,20 @@ namespace Vocal
                 };
                 if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (var reader = new StreamReader(openDialog.FileName))
-                    {
-                        var json = DynamicJson.Parse(reader.ReadToEnd());
-                        Output.Load((object[])json);
-                    }
+                    SetOutputList(openDialog.FileName);
                 }
             }
             catch (Exception error)
             {
                 MessageBox.Show(error.Message);
+            }
+        }
+        public void SetOutputList(string filename)
+        {
+            using (var reader = new StreamReader(filename))
+            {
+                var json = DynamicJson.Parse(reader.ReadToEnd());
+                Output.Load((object[])json);
             }
         }
 
