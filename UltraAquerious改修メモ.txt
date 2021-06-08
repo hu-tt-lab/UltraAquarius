@@ -1,0 +1,14 @@
+###UltraAquerious編集(シグナル追加:USHum)
+-MainのSavemixer内に新しい刺激パラメータを追加->MixerによりJsonパラメータを保存できるようにする
+-USHumMixer.xaml.csを作成する
+
+-他の刺激を参考にMixer名・パラメーター名(必要なら追加。今回はUltraSoundを参考にWaves,PRF,PulsesをWindowに追加した)
+
+-SignalWave.cs内に該当の刺激波形(今回だとUSWindowHamming_repを実装)
+	-トリガーレベルを認識して、そのトリガーレベルを変更することで変調できる(ぽい)ので返り値はLevel*(変調倍率)
+
+-soundMixer.xamlで新しい刺激波形の設定
+
+-OutputList.xaml.cs内SignalTypeに該当の刺激を追加
+
+-namespaceへの名前の追加ができない→Buildしてみたらできた

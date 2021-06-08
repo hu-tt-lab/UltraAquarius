@@ -233,10 +233,10 @@ namespace Vocal
         {
             get
             {
-                var piriod = SamplingRate / PRF;
+                var period = SamplingRate / PRF;
                 for (var i = 0; i < Size; ++i)
                 {
-                        if ((i % piriod) < (piriod / 4))
+                        if ((i % period) < (period / 4))
                         {
                             yield return Level;
                         }
@@ -257,6 +257,168 @@ namespace Vocal
         public UltrasoundWaveform Waveform { get;}
 
     }
+    /// <summary>
+    /// ultrasound moduration Trigger wavegenerator
+    /// </summary>
+    public class WindowSine : SignalWave
+    {
+        public WindowSine(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            WindowType = windowType;
+            Level = 1.0;
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            WindowWaves = windowWaves;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var windowLength_ = WindowWaves / Frequency * SamplingRate;
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i <= windowLength_)
+                    {
+                        yield return Level * Math.Sin(0.25 * Frequency / WindowWaves * 2 * Math.PI * i / SamplingRate);
+                    }
+                    else if (windowLength_ < i & i < Size - windowLength_)
+                    {
+                        yield return Level;
+                    }
+                    else
+                    {
+                        yield return Level * Math.Sin(0.25 * Frequency / WindowWaves * 2 * Math.PI * (Size - i) / SamplingRate);
+                    }
+
+
+                }
+            }
+        }
+
+        public USModWindowType WindowType { get; } = USModWindowType.Sine;
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 1000;
+        public double WindowWaves { get; set; } = 100;
+    }
+
+    public class WindowLiner : SignalWave
+    {
+        public WindowLiner(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            WindowType = windowType;
+            Level = 1.0;
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            WindowWaves = windowWaves;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var windowLength_ = WindowWaves / Frequency * SamplingRate;
+                for (var i = 0; i < Size; ++i)
+                {
+                    if (i <= windowLength_)
+                    {
+                        yield return Level * i / windowLength_;
+                    }
+                    else if (windowLength_ < i & i < Size - windowLength_)
+                    {
+                        yield return Level;
+                    }
+                    else
+                    {
+                        yield return Level * (Size - i) / windowLength_;
+                    }
+
+
+                }
+            }
+        }
+
+        public USModWindowType WindowType { get; } = USModWindowType.Sine;
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 1000;
+        public double WindowWaves { get; set; } = 100;
+    }
+    /// <summary>
+    /// UltrasoundRepeatModu Trigger wavegenerator
+    /// </summary>
+    public class USWindowHamming_rep : SignalWave
+    {
+        public USWindowHamming_rep(USHumWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double prf, int pulses, double sampling, double duration)
+            : base(sampling, duration, 0)
+        {
+            WindowType = windowType;
+            Level = 1.0;
+            Frequency = frequency;
+            Voltage = voltage;
+            Waves = waves;
+            WindowWaves = windowWaves;
+            PRF = prf;
+            Pulses = pulses;
+        }
+
+        public double Level { get; set; }
+
+        public override IEnumerable<double> Wave
+        {
+            get
+            {
+                var period = SamplingRate / PRF;
+                var windowLength = WindowWaves / Frequency * SamplingRate;
+                var wave_period_in_pulse = SamplingRate * Waves / Frequency;
+                for (var i = 0; i < Size; ++i)
+                {
+                    var position_in_pulse_section = i % period;
+                    if ((position_in_pulse_section) < (wave_period_in_pulse))
+                    {
+                        if((position_in_pulse_section) <= (windowLength))
+                        {
+                            yield return Level * Math.Sin( 0.5 * Math.PI * position_in_pulse_section / windowLength);
+                        }
+                        else if((windowLength) < (position_in_pulse_section) & (position_in_pulse_section ) < (period-windowLength))
+                        {
+                            yield return Level;
+                        }
+                        else
+                        {
+                            yield return Level * Math.Sin(0.5 * Math.PI * (wave_period_in_pulse - position_in_pulse_section) / windowLength);
+                        }
+                            
+                    }
+                    else
+                    {
+                        yield return 0;
+                    }
+                }
+            }
+        }
+
+        public USHumWindowType WindowType { get; } = USHumWindowType.Sine;
+        public double Voltage { get; set; } = 0.5;
+        public double Frequency { get; set; } = 500000;
+        public double Waves { get; set; } = 20;
+        public double WindowWaves { get; set; } = 5;
+        public double PRF { get; set; } = 1500;
+        public double Pulses { get; set; } = 100;
+    }
+
+    /// <summary>
+    /// Waveforms trigger Wave generator
+    /// </summary>
     public class SawWave : SignalWave
     {
         public SawWave(double frequency, double voltage, int waves, double sampling, double duration)
@@ -538,100 +700,6 @@ namespace Vocal
         public double Interval { get;} = 10;
         public int Waves { get; } = 1;
 
-    }
-
-    public class WindowSine : SignalWave
-    {
-        public WindowSine(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
-            : base(sampling, duration, 0)
-        {
-            WindowType = windowType;
-            Level = 1.0;
-            Frequency = frequency;
-            Voltage = voltage;
-            Waves = waves;
-            WindowWaves = windowWaves;
-        }
-
-        public double Level { get; set; }
-
-        public override IEnumerable<double> Wave
-        {
-            get
-            {
-                var windowLength_ = WindowWaves / Frequency * SamplingRate;
-                for (var i = 0; i < Size; ++i)
-                {
-                    if (i <= windowLength_)
-                    {
-                        yield return Level * Math.Sin(0.25 * Frequency/WindowWaves * 2 * Math.PI * i/SamplingRate);
-                    }
-                    else if(windowLength_ < i & i < Size - windowLength_) 
-                    {
-                        yield return Level;
-                    }
-                    else
-                    {
-                        yield return Level * Math.Sin(0.25 * Frequency / WindowWaves * 2 * Math.PI * (Size - i) / SamplingRate);
-                    }
-                    
-
-                }
-            }
-        }
-
-        public USModWindowType WindowType { get; } = USModWindowType.Sine;
-        public double Voltage { get; set; } = 0.5;
-        public double Frequency { get; set; } = 500000;
-        public double Waves { get; set; } = 1000;
-        public double WindowWaves { get; set; } = 100;
-    }
-
-    public class WindowLiner : SignalWave
-    {
-        public WindowLiner(USModWindowType windowType, double frequency, double voltage, double waves, double windowWaves, double sampling, double duration)
-            : base(sampling, duration, 0)
-        {
-            WindowType = windowType;
-            Level = 1.0;
-            Frequency = frequency;
-            Voltage = voltage;
-            Waves = waves;
-            WindowWaves = windowWaves;
-        }
-
-        public double Level { get; set; }
-
-        public override IEnumerable<double> Wave
-        {
-            get
-            {
-                var windowLength_ = WindowWaves / Frequency * SamplingRate;
-                for (var i = 0; i < Size; ++i)
-                {
-                    if (i <= windowLength_)
-                    {
-                        yield return Level * i / windowLength_;
-                    }
-                    else if (windowLength_ < i & i < Size - windowLength_)
-                    {
-                        yield return Level;
-                    }
-                    else
-                    {
-                        yield return Level* (Size - i) / windowLength_;
-                    }
-
-
-                }
-            }
-        }
-
-        public USModWindowType WindowType { get; } = USModWindowType.Sine;
-        public double Voltage { get; set; } = 0.5;
-        public double Frequency { get; set; } = 500000;
-        public double Waves { get; set; } = 1000;
-        public double WindowWaves { get; set; } = 100;
     }
 
 

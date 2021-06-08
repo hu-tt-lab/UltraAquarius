@@ -26,6 +26,7 @@ namespace Vocal
         Modulation,
         Ultrasound,
         USMod,
+        USHum,
         Magnetic,
         User
     }

@@ -480,6 +480,7 @@ namespace Vocal
                 Mixer.Magnetic.Load((object[])json.Magnetic);
                 Mixer.Ultrasound.Load((object[])json.Ultrasound);
                 Mixer.USMod.Load((object[])json.USMod);
+                Mixer.USHum.Load((object[])json.USHum);
             }
         }
 
@@ -510,7 +511,8 @@ namespace Vocal
                                 ModulationTone = Mixer.ModulationTone.Save().Select(x => new { Name = x.Name, Signal = x.Signal }).ToList(),
                                 Magnetic = Mixer.Magnetic.Save().Select(x => new { Name = x.Name, Signal = new JsonMagnetic(x.Signal) }).ToList(),
                                 Ultrasound = Mixer.Ultrasound.Save().Select(x => new { Name = x.Name, Signal = new JsonUltrasound(x.Signal) }).ToList(),
-                                USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal) }).ToList()
+                                USMod = Mixer.USMod.Save().Select(x => new { Name = x.Name, Signal = new JsonUSMod(x.Signal) }).ToList(),
+                                USHum =Mixer.USHum.Save().Select(x => new { Name = x.Name, Signal=new JsonUSHum(x.Signal) }).ToList()
                             }
                         ));
                         writer.WriteLine(contents);
@@ -667,6 +669,11 @@ namespace Vocal
                     {
                         throw new ArgumentException("this param is invalid.");
                     }
+                }
+                else if (variable.Type == SignalType.USHum)
+                {
+                    var signal = variable.Signal as USWindowHamming_rep;
+                    return new { number = variable.Number, name = variable.Name, voltage = signal.Voltage, frequency = signal.Frequency, waves = signal.Waves,prf = signal.PRF, pulses = signal.Pulses, type = variable.Type.ToString() };
                 }
                 else if (variable.Type == SignalType.Magnetic)
                 {

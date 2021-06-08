@@ -35,6 +35,7 @@ namespace Vocal
             Ultrasound.Lock();
             Magnetic.Lock();
             USMod.Lock();
+            USHum.Lock();
             UserDefined.Lock();
         }
 
@@ -46,6 +47,7 @@ namespace Vocal
             Ultrasound.Unlock();
             Magnetic.Unlock();
             USMod.Unlock();
+            USHum.Unlock();
             UserDefined.Unlock();
         }
 
@@ -92,6 +94,11 @@ namespace Vocal
                     case USModWindowType.Liner:
                         return new WindowLiner(x.WindowType, x.Frequency, x.Voltage, x.Waves, x.WindowWaves, SamplingRate, x.Waves / x.Frequency);
                 }
+            }
+            else if (type == SignalType.USHum)
+            {
+                var x = USHum.Find(name);
+
             }
             else if (type == SignalType.Magnetic)
             {
