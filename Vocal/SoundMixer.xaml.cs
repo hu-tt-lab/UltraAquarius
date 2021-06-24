@@ -98,6 +98,7 @@ namespace Vocal
             else if (type == SignalType.USHum)
             {
                 var x = USHum.Find(name);
+                return new USWindowHamming_rep(x.WindowType, x.Frequency, x.Voltage, x.Waves,x.WindowWaves, x.PRF, x.Pulses, SamplingRate, (x.Pulses / x.PRF));
 
             }
             else if (type == SignalType.Magnetic)

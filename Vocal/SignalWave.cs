@@ -377,27 +377,33 @@ namespace Vocal
         {
             get
             {
+                
                 var period = SamplingRate / PRF;
                 var windowLength = WindowWaves / Frequency * SamplingRate;
                 var wave_period_in_pulse = SamplingRate * Waves / Frequency;
                 for (var i = 0; i < Size; ++i)
                 {
-                    var position_in_pulse_section = i % period;
-                    if ((position_in_pulse_section) < (wave_period_in_pulse))
+                    //var position_in_pulse_section = (double)i % period;
+                    var position_in_pulse_section = (double)i;
+                    while (position_in_pulse_section >= period)
                     {
-                        if((position_in_pulse_section) <= (windowLength))
+                        position_in_pulse_section -= period;
+                    }
+                    if (position_in_pulse_section <= wave_period_in_pulse)
+                    {
+                        if(position_in_pulse_section <= windowLength)
                         {
                             yield return Level * Math.Sin( 0.5 * Math.PI * position_in_pulse_section / windowLength);
                         }
-                        else if((windowLength) < (position_in_pulse_section) & (position_in_pulse_section ) < (period-windowLength))
-                        {
-                            yield return Level;
-                        }
-                        else
+                        else if(position_in_pulse_section >= wave_period_in_pulse-windowLength)
                         {
                             yield return Level * Math.Sin(0.5 * Math.PI * (wave_period_in_pulse - position_in_pulse_section) / windowLength);
                         }
-                            
+                        else
+                        {
+                            yield return Level;
+                        }
+
                     }
                     else
                     {

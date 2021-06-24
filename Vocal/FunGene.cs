@@ -40,7 +40,7 @@ namespace Vocal
 
         public string[] GetResourse()
         {
-            return RM.FindRsrc("?*::INSTR");
+            return RM.FindRsrc("USB0::0x0D4A::?*");
         }
 
         public string Open(string Address)
@@ -200,6 +200,28 @@ namespace Vocal
             }
         }
 
+        public void Parameter(USHum parameter)
+        {
+            try
+            {
+                DMM.WriteString(":SOURce1:AMSC:SOURce EXTernal");
+                DMM.WriteString(":SOURce1:FUNCtion:SHAPe SIN");
+                DMM.WriteString(":SOURce1:FREQuency:CW " + parameter.Frequency + "HZ");
+                if (parameter.Voltage > 1.0)
+                {
+                    throw new ArgumentException("Over Applied Max Voltage !");
+                }
+                DMM.WriteString(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude " + parameter.Voltage + " VPP");
+                DMM.WriteString(":SOURce1:AMSC:DEPTh 100.0PCT");
+                DMM.WriteString(":SOURce1:PHASe:ADJust 0DEG");
+                DMM.WriteString(":OUTPut1:POLarity SINusoid, NORMal");
+                DMM.WriteString(":OUTPut1:SCALe SINusoid, FS");
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
+        }
         public string OnOff()
         {
             try

@@ -234,6 +234,11 @@ namespace Vocal
                             var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
                             Fungene.Open(name.Resource);
                         }
+                        else if (signals.Any(x => x.Type == SignalType.USHum))
+                        {
+                            var name = (VisaResuorce)FGConfigure.ResourceComboBox.SelectedItem;
+                            Fungene.Open(name.Resource);
+                        }
 
                         foreach (var index in table[0])
                         {
@@ -260,6 +265,17 @@ namespace Vocal
                             {
                                 Fungene.Oscillation("AMSC");
                                 Fungene.Parameter(Mixer.USMod.Find(signal.Name));
+                                for (var i = 0; i < trial; ++i)
+                                {
+                                    device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                    Progress.Value += 1;
+                                    await Task.Delay(Interval.Interval, Cancellation.Token);
+                                }
+                            }
+                            else if (signal.Type == SignalType.USHum)
+                            {
+                                Fungene.Oscillation("AMSC");
+                                Fungene.Parameter(Mixer.USHum.Find(signal.Name));
                                 for (var i = 0; i < trial; ++i)
                                 {
                                     device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
@@ -391,6 +407,12 @@ namespace Vocal
                                     Fungene.Parameter(Mixer.USMod.Find(signal.Name));
                                     device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
                                 }
+                                else if (signal.Type == SignalType.USHum)
+                                {
+                                    Fungene.Oscillation("AMSC");
+                                    Fungene.Parameter(Mixer.USHum.Find(signal.Name));
+                                    device.Output(signal.Number, nonuse.Wave, nonuse.Wave, signal.Signal.Wave, trigger.Wave);
+                                }
                                 else if (signal.Type == SignalType.Magnetic)
                                 {
                                     Fungene.Oscillation("TRIGGER");
@@ -438,6 +460,10 @@ namespace Vocal
             SetIdle();
         }
 
+        private void NewMethod()
+        {
+            Fungene.BurstSyncType("BURSTSYNC");
+        }
 
         private void OnStop(object sender, RoutedEventArgs e)
         {
